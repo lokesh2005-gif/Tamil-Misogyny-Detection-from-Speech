@@ -16,6 +16,13 @@ from config import (
 )
 
 
+# Module-level in-memory cache to prevent re-parsing 10k Excel rows on every Streamlit rerun
+_EXCEL_CACHE_DF: Optional[pd.DataFrame] = None
+_EXCEL_CACHE_MTIME: float = 0.0
+_DATASET_SUMMARY_CACHE: Optional[Dict[str, Any]] = None
+_SUMMARY_CACHE_MTIME: float = 0.0
+
+
 def initialize_excel_dataset() -> pd.DataFrame:
     """
     Ensure data/tamil_misogyny_dataset.xlsx exists with standard schema.
@@ -41,11 +48,17 @@ def initialize_excel_dataset() -> pd.DataFrame:
 
 
 def load_excel_dataset() -> pd.DataFrame:
-    """Load the current training dataset from Excel."""
+    """Load the current training dataset from Excel with mtime caching for high performance."""
+    global _EXCEL_CACHE_DF, _EXCEL_CACHE_MTIME
+
     if not EXCEL_DATASET_PATH.exists():
         return initialize_excel_dataset()
 
     try:
+        current_mtime = EXCEL_DATASET_PATH.stat().st_mtime
+        if _EXCEL_CACHE_DF is not None and current_mtime == _EXCEL_CACHE_MTIME:
+            return _EXCEL_CACHE_DF.copy()
+
         df = pd.read_excel(EXCEL_DATASET_PATH)
         for col in EXCEL_DATASET_COLUMNS:
             if col not in df.columns:
@@ -64,9 +77,13 @@ def load_excel_dataset() -> pd.DataFrame:
 
         if "label" in df.columns:
             df["label"] = df["label"].apply(_to_str_label)
-        return df
+
+        _EXCEL_CACHE_DF = df
+        _EXCEL_CACHE_MTIME = current_mtime
+        return df.copy()
     except Exception:
         return initialize_excel_dataset()
+
 
 
 
@@ -154,9 +171,11 @@ def append_training_sample(
 
 def get_dataset_summary() -> Dict[str, Any]:
     """
-    Compute real dataset summary metrics for dashboard cards.
+    Compute real dataset summary metrics for dashboard cards with mtime caching.
     Handles both integer labels (0/1) and string labels (MISOGYNISTIC/NON-MISOGYNISTIC).
     """
+    global _DATASET_SUMMARY_CACHE, _SUMMARY_CACHE_MTIME
+
     if not EXCEL_DATASET_PATH.exists():
         return {
             "total_samples": 0,
@@ -167,7 +186,53 @@ def get_dataset_summary() -> Dict[str, Any]:
         }
 
     try:
-        df = pd.read_excel(EXCEL_DATASET_PATH)
+        current_mtime = EXCEL_DATASET_PATH.stat().st_mtime
+        if _DATASET_SUMMARY_CACHE is not None and current_mtime == _SUMMARY_CACHE_MTIME:
+            return dict(_DATASET_SUMMARY_CACHE)
+
+        df = load_excel_dataset()
+        total = len(df)
+
+        if total == 0 or "label" not in df.columns:
+            res = {
+                "total_samples": 0,
+                "misogynistic_count": 0,
+                "non_misogynistic_count": 0,
+                "category_distribution": {},
+                "is_empty": True,
+            }
+            _DATASET_SUMMARY_CACHE = res
+            _SUMMARY_CACHE_MTIME = current_mtime
+            return res
+
+        # Normalize labels — handles integer (0/1) and string formats
+        def _is_misogynistic(val) -> bool:
+            s = str(val).strip().upper()
+            if s in ("1", "1.0"):
+                return True
+            if s in ("0", "0.0"):
+                return False
+            return "MIS" in s and "NON" not in s
+
+        misogynistic_count   = int(df["label"].apply(_is_misogynistic).sum())
+        non_misogynistic_count = total - misogynistic_count
+
+        category_counts: Dict[str, int] = {}
+        if "category" in df.columns:
+            raw_cats = df["category"].dropna().astype(str).str.strip().str.upper()
+            raw_cats = raw_cats.replace({"NAN": "NONE", "": "NONE"})
+            category_counts = raw_cats.value_counts().to_dict()
+
+        summary_res = {
+            "total_samples": total,
+            "misogynistic_count": misogynistic_count,
+            "non_misogynistic_count": non_misogynistic_count,
+            "category_distribution": category_counts,
+            "is_empty": False,
+        }
+        _DATASET_SUMMARY_CACHE = summary_res
+        _SUMMARY_CACHE_MTIME = current_mtime
+        return dict(summary_res)
     except Exception:
         return {
             "total_samples": 0,
@@ -177,42 +242,6 @@ def get_dataset_summary() -> Dict[str, Any]:
             "is_empty": True,
         }
 
-    total = len(df)
-
-    if total == 0 or "label" not in df.columns:
-        return {
-            "total_samples": 0,
-            "misogynistic_count": 0,
-            "non_misogynistic_count": 0,
-            "category_distribution": {},
-            "is_empty": True,
-        }
-
-    # Normalize labels — handles integer (0/1) and string formats
-    def _is_misogynistic(val) -> bool:
-        s = str(val).strip().upper()
-        if s in ("1", "1.0"):
-            return True
-        if s in ("0", "0.0"):
-            return False
-        return "MIS" in s and "NON" not in s
-
-    misogynistic_count   = int(df["label"].apply(_is_misogynistic).sum())
-    non_misogynistic_count = total - misogynistic_count
-
-    category_counts: Dict[str, int] = {}
-    if "category" in df.columns:
-        raw_cats = df["category"].dropna().astype(str).str.strip().str.upper()
-        raw_cats = raw_cats.replace({"NAN": "NONE", "": "NONE"})
-        category_counts = raw_cats.value_counts().to_dict()
-
-    return {
-        "total_samples": total,
-        "misogynistic_count": misogynistic_count,
-        "non_misogynistic_count": non_misogynistic_count,
-        "category_distribution": category_counts,
-        "is_empty": False,
-    }
 
 
 
