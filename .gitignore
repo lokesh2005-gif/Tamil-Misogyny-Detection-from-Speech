@@ -1,0 +1,35 @@
+# Environment variables
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Models and temporary data
+models/*.pkl
+data/audio/*
+!data/audio/.gitkeep
+data/videos/*
+!data/videos/.gitkeep
+data/transcripts/*
+!data/transcripts/.gitkeep
+outputs/*
+!outputs/.gitkeep
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test & system cache
+.pytest_cache/
+*.wav
+*.mp4
+*.mkv
+*.avi
+*.mov
+

@@ -1,0 +1,11 @@
+id,transcript,label,category,reason
+D001,"பெண்களின் மதிப்பு அவர்களின் அழகில் மட்டும் இல்லை என்று நாம் புரிந்து கொள்ள வேண்டும்.",1,OBJECTIFICATION,"The statement discusses the reduction of women to physical appearance."
+D002,"பெண்கள் வீட்டை மட்டும் கவனிக்க வேண்டும் என்று கூறுவது ஒரு பாலின பாகுபாடு.",1,STEREOTYPING,"The statement describes a restrictive gender stereotype."
+D003,"ஒரு பெண்ணின் உடையை வைத்து அவளை அவமதிப்பது தவறானது.",1,SHAMING,"The statement concerns appearance-based shaming."
+D004,"பெண்களுக்கு எதிராக வன்முறையை ஆதரிப்பது ஏற்றுக்கொள்ள முடியாது.",1,VIOLENCE,"The statement discusses support for violence against women."
+D005,"பெண்கள் ஆண்களை விட குறைவானவர்கள் என்று கூறுவது தவறான கருத்து.",1,GENERAL_ABUSE,"The statement expresses an inferior view of women."
+D006,"பெண்களும் ஆண்களும் சமமாக கல்வி பெற வேண்டும்.",0,NONE,"The statement supports equal education."
+D007,"என் சகோதரி ஒரு மென்பொருள் பொறியாளராக வேலை செய்கிறார்.",0,NONE,"The statement is a neutral description."
+D008,"பெண்கள் மற்றும் ஆண்கள் சேர்ந்து விளையாட்டு போட்டியில் கலந்து கொண்டனர்.",0,NONE,"The statement describes a normal activity."
+D009,"அவர் மருத்துவமனையில் நோயாளிகளுக்கு சிகிச்சை அளிக்கிறார்.",0,NONE,"The statement is neutral."
+D010,"அனைவருக்கும் சம உரிமையும் மரியாதையும் கிடைக்க வேண்டும்.",0,NONE,"The statement supports equality."
