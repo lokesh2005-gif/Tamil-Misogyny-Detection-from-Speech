@@ -56,9 +56,13 @@ class TestTamilMisogynyPipeline(unittest.TestCase):
         self.assertTrue(DEMO_DATASET_PATH.exists(), "demo_dataset.csv must exist")
         df = pd.read_csv(DEMO_DATASET_PATH)
 
-        expected_cols = ["id", "transcript", "label", "category", "reason"]
+        expected_cols = [
+            "id", "transcript", "label", "category", "reason",
+            "evidence", "cultural_context", "tamil_explanation"
+        ]
         self.assertListEqual(list(df.columns), expected_cols)
         self.assertEqual(len(df), 10, "demo_dataset.csv must contain exactly 10 demonstration examples")
+
 
         for cat in df["category"]:
             self.assertIn(cat, CATEGORIES)

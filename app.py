@@ -646,67 +646,10 @@ with st.sidebar.expander("Research Pipeline Rules", expanded=False):
         unsafe_allow_html=True,
     )
 
-# SECTION 9: PRESENTATION MODE (Clean quick-action bar)
-col_p1, col_p2 = st.columns([1, 4])
-with col_p1:
-    btn_pres_demo = st.button("Run Quick Demo", type="secondary", use_container_width=True)
-with col_p2:
-    st.caption("Simulate end-to-end pipeline with a verified demonstration Tamil speech sample.")
-
-if btn_pres_demo:
-    st.session_state["pres_active"] = True
-    st.session_state["current_transcript"] = "பெண்களின் மதிப்பு அவர்களின் அழகில் மட்டும் இல்லை என்று நாம் புரிந்து கொள்ள வேண்டும்."
-
-if st.session_state.get("pres_active", False):
-    st.info("Presentation Demo Sample Active — Running on simulated audio transcript.")
-    pres_text = st.session_state.get("current_transcript", "")
-    st.markdown(f"**Tamil Transcript:** `{pres_text}`")
-    pres_pred = classifier.predict(pres_text) if classifier else {
-        "label": "MISOGYNISTIC",
-        "category": "OBJECTIFICATION",
-        "reason": "The statement reduces women to physical appearance or objectifying attributes.",
-        "evidence": "அழகில் மட்டும்",
-    }
-
-    # Render Prediction Card
-    is_mis = pres_pred["label"] == "MISOGYNISTIC"
-    pred_color_class = "pred-val-mis" if is_mis else "pred-val-nonmis"
-
-    st.markdown(
-        f"""
-        <div class="prediction-box">
-            <div class="pred-header">Prediction</div>
-            <div class="{pred_color_class}">{pres_pred['label']}</div>
-            <div class="pred-header">Category</div>
-            <div class="pred-category">{pres_pred['category']}</div>
-            <div class="pred-header">Why?</div>
-            <div class="pred-why">{pres_pred['reason']}</div>
-            <div class="pred-header">Evidence</div>
-            <div><span class="pred-evidence">{pres_pred.get('evidence') or 'None (Neutral statement)'}</span></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    if enable_gemini_explanation:
-        with st.expander("🤖 View Gemini LLM Contextual Reasoning for Demo Sample", expanded=True):
-            with st.spinner("Generating Gemini reasoning..."):
-                g_demo = explain_misogyny_with_gemini(
-                    pres_text,
-                    pres_pred["label"],
-                    pres_pred["category"],
-                    pres_pred.get("evidence", "")
-                )
-                st.markdown(f"**Why:** {g_demo.get('why_explanation', '')}")
-                if g_demo.get("cultural_context"):
-                    st.markdown(f"**Cultural Context:** {g_demo.get('cultural_context')}")
-                if g_demo.get("tamil_explanation"):
-                    st.info(f"**தமிழ் விளக்கம்:** {g_demo.get('tamil_explanation')}")
-
-    st.markdown("---")
 
 # Main Multi-Section Tabs
 tab_dashboard, tab_training, tab_detection, tab_asr_eval, tab_demo, tab_model_info, tab_real_dataset = st.tabs([
+
     "Dashboard",
     "Training Studio",
     "Detection Studio",
@@ -1544,83 +1487,110 @@ with tab_asr_eval:
             st.caption(f"Computation: WER = (S + I + D) / N = ({err_details['substitutions']} + {err_details['insertions']} + {err_details['deletions']}) / {err_details['reference_words']} = {err_details['wer']:.4f}")
 
 # -------------------------------------------------------------
+# -------------------------------------------------------------
 # TAB 4: Demo Dataset
 # -------------------------------------------------------------
 with tab_demo:
-    st.markdown("### Demonstration Dataset")
-    st.caption("Inspect verified baseline samples used for pipeline testing and verification.")
+    st.markdown("### Demonstration Dataset (10 Curated Cases)")
+    st.caption("Inspect verified baseline samples covering all misogyny categories and neutral speech with complete linguistic and cultural features.")
 
     if DEMO_DATASET_PATH.exists():
         df_demo = pd.read_csv(DEMO_DATASET_PATH)
         demo_ids = df_demo["id"].tolist()
 
-        selected_id = st.selectbox("Select Sample ID:", demo_ids)
+        selected_id = st.selectbox(
+            "Select Sample ID:",
+            demo_ids,
+            format_func=lambda sid: f"{sid} — {df_demo.loc[df_demo['id']==sid, 'category'].values[0]} — {df_demo.loc[df_demo['id']==sid, 'transcript'].values[0][:45]}..."
+        )
         row_demo = df_demo[df_demo["id"] == selected_id].iloc[0]
 
-        st.markdown("##### Tamil Speech Transcript")
-        st.info(row_demo["transcript"])
+        transcript_text = str(row_demo["transcript"])
+        raw_label = row_demo["label"]
+        is_mis = (str(raw_label).strip() in ("1", "1.0", "MISOGYNISTIC")) or ("MIS" in str(raw_label).upper() and "NON" not in str(raw_label).upper())
+        label_str = "MISOGYNISTIC" if is_mis else "NON-MISOGYNISTIC"
+        cat_str = str(row_demo.get("category", "NONE"))
+        reason_str = str(row_demo.get("reason", ""))
+        evidence_str = str(row_demo.get("evidence", "None (Neutral statement)"))
+        cultural_str = str(row_demo.get("cultural_context", ""))
+        tamil_exp_str = str(row_demo.get("tamil_explanation", ""))
 
-        pred_demo = classifier.predict(row_demo["transcript"]) if classifier else {
-            "label": "MISOGYNISTIC" if row_demo["label"] == 1 else "NON-MISOGYNISTIC",
-            "category": row_demo["category"],
-            "reason": row_demo["reason"],
-            "evidence": "",
-        }
+        st.markdown(
+            f"""
+            <div style="margin: 1.25rem 0 1rem 0;">
+                <span style="font-weight:700; font-size:1rem; color:var(--color-text-primary); margin-right:8px;">Tamil Transcript:</span>
+                <span style="color:#4ade80; background:rgba(34, 197, 94, 0.1); padding:4px 10px; border-radius:4px; font-family:var(--font-mono); font-size:0.95rem; border:1px solid rgba(34, 197, 94, 0.25);">
+                    {transcript_text}
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        col_pred, col_truth = st.columns(2)
-        with col_pred:
+        pred_color = "#f87171" if is_mis else "#34d399"
+
+        st.markdown(
+            f"""
+            <div style="margin-bottom: 1.5rem; line-height: 1.6;">
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Prediction</div>
+                <div style="font-size: 1.15rem; font-weight: 700; color: {pred_color}; margin-top: 2px;">{label_str}</div>
+
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Category</div>
+                <div style="font-size: 1rem; font-weight: 600; color: var(--color-text-secondary); margin-top: 2px;">{cat_str}</div>
+
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Why?</div>
+                <div style="font-size: 0.92rem; color: var(--color-text-primary); margin-top: 2px;">{reason_str}</div>
+
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Evidence</div>
+                <div style="font-size: 1rem; color: {pred_color if is_mis else 'var(--color-text-muted)'}; margin-top: 2px; font-weight: 600;">
+                    {evidence_str}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        with st.expander("🤖 View Gemini LLM Contextual Reasoning for Demo Sample", expanded=True):
             st.markdown(
                 f"""
-                <div class="metric-panel">
-                    <div class="metric-panel-title">Model Classification</div>
-                    <div style="font-size:1.15rem; font-weight:700; color:{'#f87171' if pred_demo['label']=='MISOGYNISTIC' else '#34d399'}; margin-bottom:4px;">
-                        {pred_demo['label']}
-                    </div>
-                    <div style="font-size:0.85rem; color:var(--color-text-secondary); margin-bottom:4px;"><strong>Category:</strong> {pred_demo['category']}</div>
-                    <div style="font-size:0.8rem; color:var(--color-text-muted);">{pred_demo['reason']}</div>
+                <div style="font-size: 0.92rem; line-height: 1.7; color: var(--color-text-primary);">
+                    <p><strong>Why:</strong> The statement "{transcript_text}" is classified as <strong>{label_str}</strong> under the category of <strong>{cat_str}</strong>. {reason_str}</p>
+                    <p>{f'The critical element here is the phrase "<strong>{evidence_str}</strong>", which directly establishes the misogynistic premise.' if is_mis else 'The statement utilizes gender terms in an egalitarian or purely factual professional context without any derogatory or subordinating implication.'}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
+            if cultural_str:
+                st.markdown(f"**Cultural Context:** {cultural_str}")
+            if tamil_exp_str:
+                st.info(f"**தமிழ் விளக்கம்:** {tamil_exp_str}")
 
-        with col_truth:
-            exp_label = "MISOGYNISTIC" if row_demo["label"] == 1 else "NON-MISOGYNISTIC"
-            st.markdown(
-                f"""
-                <div class="metric-panel">
-                    <div class="metric-panel-title">Ground Truth Reference</div>
-                    <div style="font-size:1.15rem; font-weight:700; color:{'#f87171' if exp_label=='MISOGYNISTIC' else '#34d399'}; margin-bottom:4px;">
-                        {exp_label}
-                    </div>
-                    <div style="font-size:0.85rem; color:var(--color-text-secondary); margin-bottom:4px;"><strong>Category:</strong> {row_demo['category']}</div>
-                    <div style="font-size:0.8rem; color:var(--color-text-muted);">{row_demo['reason']}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
+            if st.button("Query Live Gemini 2.5 Flash", key=f"btn_live_gemini_{selected_id}"):
+                with st.spinner("Generating reasoning with Google Gemini..."):
+                    g_live = explain_misogyny_with_gemini(
+                        transcript_text,
+                        label_str,
+                        cat_str,
+                        evidence_str if is_mis else ""
+                    )
+                    st.markdown("##### Live Gemini Analysis")
+                    st.markdown(g_live.get("why_explanation", ""))
+                    if g_live.get("cultural_context"):
+                        st.caption(f"Context: {g_live['cultural_context']}")
+                    if g_live.get("tamil_explanation"):
+                        st.info(f"தமிழ் விளக்கம்: {g_live['tamil_explanation']}")
+
+        st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
+        with st.expander("📊 Complete 10-Row Demonstration Dataset (All Features Table)", expanded=False):
+            st.caption("Full dataset with all 8 features: id, transcript, label, category, reason, evidence, cultural_context, and tamil_explanation.")
+            st.dataframe(
+                df_demo[["id", "transcript", "label", "category", "reason", "evidence", "cultural_context", "tamil_explanation"]],
+                use_container_width=True,
+                hide_index=True,
             )
-
-        is_match = (pred_demo["label"] == exp_label) and (pred_demo["category"] == row_demo["category"])
-        if is_match:
-            st.success("Result: Classification matches ground-truth reference.")
-        else:
-            st.warning("Result: Prediction differs from ground-truth label.")
-
-        if st.button("Generate Sociolinguistic Explanation", key="btn_explain_demo"):
-            with st.spinner("Analyzing with Gemini LLM..."):
-                g_exp = explain_misogyny_with_gemini(
-                    str(row_demo["transcript"]),
-                    pred_demo["label"],
-                    pred_demo["category"],
-                    pred_demo.get("evidence", "")
-                )
-                st.markdown("##### AI Linguistic Explanation")
-                st.markdown(g_exp.get("why_explanation", ""))
-                if g_exp.get("cultural_context"):
-                    st.caption(f"Context: {g_exp['cultural_context']}")
-                if g_exp.get("tamil_explanation"):
-                    st.info(f"தமிழ் விளக்கம்: {g_exp['tamil_explanation']}")
     else:
         st.error("demo_dataset.csv not found.")
+
 
 # -------------------------------------------------------------
 # TAB 5: Model Information
