@@ -81,757 +81,422 @@ st.markdown(
     """
     <style>
     /* ══════════════════════════════════════════════════════
-       GLOBAL RESET & BASE
+       TYPOGRAPHY & ROOT VARIABLES
     ══════════════════════════════════════════════════════ */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+        --color-bg-canvas: #0b0f19;
+        --color-bg-surface: #131b2e;
+        --color-bg-subtle: #1a233a;
+        --color-border-subtle: #242f4d;
+        --color-border-strong: #3b4b72;
+        --color-text-primary: #f8fafc;
+        --color-text-secondary: #94a3b8;
+        --color-text-muted: #64748b;
+        --color-primary: #3b82f6;
+        --color-primary-hover: #2563eb;
+        --color-danger: #ef4444;
+        --color-danger-subtle: rgba(239, 68, 68, 0.12);
+        --color-success: #10b981;
+        --color-success-subtle: rgba(16, 185, 129, 0.12);
+        --color-warning: #f59e0b;
+        --color-warning-subtle: rgba(245, 158, 11, 0.12);
+    }
 
     html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        -webkit-font-smoothing: antialiased;
     }
 
-    /* Hide Streamlit branding */
+    /* Remove Streamlit default header/footer clutter */
     #MainMenu, footer, header { visibility: hidden; }
 
-    /* Main content background */
+    /* Base Layout Container */
     .stApp {
-        background: linear-gradient(135deg, #0A0E1A 0%, #0D1424 40%, #0F172A 100%);
-        min-height: 100vh;
+        background-color: var(--color-bg-canvas) !important;
+        color: var(--color-text-primary) !important;
     }
 
-    /* Sidebar background */
+    /* ══════════════════════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════════════════════ */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #080C18 0%, #0B1020 100%) !important;
-        border-right: 1px solid rgba(99,102,241,0.15) !important;
+        background-color: var(--color-bg-surface) !important;
+        border-right: 1px solid var(--color-border-subtle) !important;
+        padding-top: 1.5rem;
     }
 
-    /* Tab container styling */
+    .sidebar-header {
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--color-border-subtle);
+        margin-bottom: 1.25rem;
+    }
+    .sidebar-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.01em;
+        margin-bottom: 0.2rem;
+    }
+    .sidebar-subtitle {
+        font-size: 0.78rem;
+        color: var(--color-text-muted);
+        line-height: 1.3;
+    }
+
+    .section-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--color-text-muted);
+        margin: 1.2rem 0 0.5rem 0;
+    }
+
+    .status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.35rem 0;
+        font-size: 0.82rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .status-row-label {
+        color: var(--color-text-secondary);
+        font-weight: 500;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       TABS NAVIGATION
+    ══════════════════════════════════════════════════════ */
     .stTabs [data-baseweb="tab-list"] {
-        background: rgba(255,255,255,0.03) !important;
-        border-radius: 14px !important;
-        padding: 6px !important;
-        border: 1px solid rgba(255,255,255,0.06) !important;
+        background-color: var(--color-bg-surface) !important;
+        border: 1px solid var(--color-border-subtle) !important;
+        border-radius: 8px !important;
+        padding: 4px !important;
         gap: 4px !important;
+        margin-bottom: 1.5rem !important;
     }
     .stTabs [data-baseweb="tab"] {
-        background: transparent !important;
-        color: rgba(255,255,255,0.5) !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        font-size: 0.83rem !important;
-        padding: 8px 16px !important;
+        background-color: transparent !important;
+        color: var(--color-text-secondary) !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+        padding: 6px 14px !important;
         border: none !important;
-        transition: all 0.2s ease !important;
+        transition: color 0.15s ease, background-color 0.15s ease !important;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        color: var(--color-text-primary) !important;
+        background-color: var(--color-bg-subtle) !important;
     }
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%) !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.4) !important;
+        background-color: var(--color-primary) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
     }
     .stTabs [data-baseweb="tab-panel"] {
         background: transparent !important;
-        padding: 24px 0 !important;
+        padding: 0 !important;
     }
 
-    /* Buttons */
+    /* ══════════════════════════════════════════════════════
+       PRODUCT HEADER / HERO
+    ══════════════════════════════════════════════════════ */
+    .app-header {
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--color-border-subtle);
+        margin-bottom: 1.5rem;
+    }
+    .app-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.35rem;
+    }
+    .app-desc {
+        font-size: 0.92rem;
+        color: var(--color-text-secondary);
+        max-width: 820px;
+        line-height: 1.5;
+        margin-bottom: 0.85rem;
+    }
+    .meta-badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+    }
+    .meta-tag {
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background-color: var(--color-bg-subtle);
+        border: 1px solid var(--color-border-subtle);
+        color: var(--color-text-secondary);
+    }
+    .meta-tag-blue {
+        color: #93c5fd;
+        border-color: #1e3a8a;
+        background-color: #0f172a;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       CLEAN DATA PANELS & METRICS
+    ══════════════════════════════════════════════════════ */
+    .metric-panel {
+        background-color: var(--color-bg-surface);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 8px;
+        padding: 1rem 1.15rem;
+        height: 100%;
+    }
+    .metric-panel-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted);
+        margin-bottom: 0.4rem;
+    }
+    .metric-panel-number {
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        line-height: 1.1;
+        margin-bottom: 0.2rem;
+    }
+    .metric-panel-desc {
+        font-size: 0.78rem;
+        color: var(--color-text-muted);
+    }
+
+    /* Category Row Item */
+    .category-cell {
+        background-color: var(--color-bg-surface);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 6px;
+        padding: 0.85rem 1rem;
+    }
+    .category-cell-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.35rem;
+    }
+    .category-name {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+    }
+    .category-count {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+    }
+    .category-bar-bg {
+        background-color: var(--color-bg-subtle);
+        border-radius: 3px;
+        height: 4px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .category-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       RESULTS DISPLAY (VERDICT & ANALYSIS)
+    ══════════════════════════════════════════════════════ */
+    .verdict-banner {
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        margin: 1.25rem 0;
+        border: 1px solid transparent;
+    }
+    .verdict-banner-misogynistic {
+        background-color: rgba(239, 68, 68, 0.08);
+        border-color: #ef4444;
+    }
+    .verdict-banner-non-misogynistic {
+        background-color: rgba(16, 185, 129, 0.08);
+        border-color: #10b981;
+    }
+    .verdict-headline {
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin-bottom: 0.25rem;
+    }
+    .verdict-mis-text { color: #f87171; }
+    .verdict-clean-text { color: #34d399; }
+    
+    .verdict-subtext {
+        font-size: 0.88rem;
+        color: var(--color-text-secondary);
+        line-height: 1.5;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 0.5rem 1rem;
+        padding: 1rem 0;
+        font-size: 0.88rem;
+        border-top: 1px solid var(--color-border-subtle);
+        margin-top: 0.85rem;
+    }
+    .detail-key {
+        color: var(--color-text-muted);
+        font-weight: 500;
+    }
+    .detail-val {
+        color: var(--color-text-primary);
+        font-weight: 500;
+    }
+    .evidence-pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       FORM CONTROLS & BUTTONS
+    ══════════════════════════════════════════════════════ */
     .stButton > button {
-        background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%) !important;
-        color: #FFFFFF !important;
-        border: none !important;
-        border-radius: 10px !important;
-        font-weight: 700 !important;
-        font-size: 0.9rem !important;
-        padding: 10px 20px !important;
-        box-shadow: 0 4px 15px rgba(99,102,241,0.3) !important;
-        transition: all 0.2s ease !important;
+        background-color: var(--color-primary) !important;
+        color: #ffffff !important;
+        border: 1px solid var(--color-primary-hover) !important;
+        border-radius: 6px !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1rem !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+        transition: background-color 0.15s ease !important;
     }
     .stButton > button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 8px 25px rgba(99,102,241,0.45) !important;
-    }
-    button[kind="secondary"] {
-        background: rgba(255,255,255,0.07) !important;
-        border: 1px solid rgba(255,255,255,0.12) !important;
-        box-shadow: none !important;
+        background-color: var(--color-primary-hover) !important;
+        border-color: var(--color-primary-hover) !important;
     }
 
-    /* Text inputs & text areas */
+    button[kind="secondary"] {
+        background-color: var(--color-bg-subtle) !important;
+        border: 1px solid var(--color-border-subtle) !important;
+        color: var(--color-text-primary) !important;
+    }
+    button[kind="secondary"]:hover {
+        background-color: var(--color-border-subtle) !important;
+    }
+
     .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 10px !important;
-        color: #E2E8F0 !important;
-        font-size: 0.92rem !important;
+    .stTextArea > div > div > textarea,
+    .stSelectbox > div > div {
+        background-color: var(--color-bg-surface) !important;
+        border: 1px solid var(--color-border-subtle) !important;
+        border-radius: 6px !important;
+        color: var(--color-text-primary) !important;
+        font-size: 0.88rem !important;
     }
     .stTextInput > div > div > input:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: rgba(99,102,241,0.6) !important;
-        box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
     }
 
-    /* Selectbox & Slider */
-    .stSelectbox > div > div {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        border-radius: 10px !important;
-        color: #E2E8F0 !important;
-    }
-    .stRadio > div { color: #CBD5E1 !important; }
-    .stCheckbox > label > span { color: #CBD5E1 !important; }
-    label, .stMarkdown { color: #CBD5E1 !important; }
-    h1, h2, h3, h4, h5, h6 { color: #F1F5F9 !important; }
-    p, li { color: #CBD5E1 !important; }
-
-    /* Expanders */
+    /* Clean subtle expanders */
     .streamlit-expanderHeader {
-        background: rgba(255,255,255,0.04) !important;
-        border-radius: 10px !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        color: #E2E8F0 !important;
+        background-color: var(--color-bg-surface) !important;
+        border: 1px solid var(--color-border-subtle) !important;
+        border-radius: 6px !important;
+        font-size: 0.85rem !important;
         font-weight: 600 !important;
+        color: var(--color-text-secondary) !important;
     }
     .streamlit-expanderContent {
-        background: rgba(255,255,255,0.02) !important;
-        border: 1px solid rgba(255,255,255,0.06) !important;
+        background-color: var(--color-bg-surface) !important;
+        border: 1px solid var(--color-border-subtle) !important;
         border-top: none !important;
-        border-radius: 0 0 10px 10px !important;
+        border-radius: 0 0 6px 6px !important;
     }
 
-    /* Alerts / Info / Success / Warning / Error */
-    .stAlert {
-        border-radius: 12px !important;
-        border: none !important;
-    }
-    div[data-testid="stInfoMessage"] {
-        background: rgba(99,102,241,0.12) !important;
-        border-left: 4px solid #6366F1 !important;
-        color: #C7D2FE !important;
-        border-radius: 10px !important;
-    }
-    div[data-testid="stSuccessMessage"] {
-        background: rgba(16,185,129,0.12) !important;
-        border-left: 4px solid #10B981 !important;
-        color: #A7F3D0 !important;
-        border-radius: 10px !important;
-    }
-    div[data-testid="stWarningMessage"] {
-        background: rgba(245,158,11,0.12) !important;
-        border-left: 4px solid #F59E0B !important;
-        color: #FDE68A !important;
-        border-radius: 10px !important;
-    }
-    div[data-testid="stErrorMessage"] {
-        background: rgba(239,68,68,0.12) !important;
-        border-left: 4px solid #EF4444 !important;
-        color: #FCA5A5 !important;
-        border-radius: 10px !important;
-    }
-
-    /* Metrics */
-    div[data-testid="stMetric"] {
-        background: rgba(255,255,255,0.04) !important;
-        border-radius: 12px !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        padding: 16px !important;
-    }
-    div[data-testid="stMetricValue"] { color: #F1F5F9 !important; }
-    div[data-testid="stMetricLabel"] { color: #94A3B8 !important; }
-
-    /* DataFrame / Tables */
-    .stDataFrame { border-radius: 12px !important; overflow: hidden !important; }
-
-    /* Dividers */
-    hr { border-color: rgba(255,255,255,0.08) !important; }
-
-    /* Code blocks */
-    .stCodeBlock, code {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        border-radius: 10px !important;
-        color: #A5B4FC !important;
-    }
-
-    /* Spinner */
-    .stSpinner > div { border-top-color: #6366F1 !important; }
-
-    /* ══════════════════════════════════════════════════════
-       HERO BANNER
-    ══════════════════════════════════════════════════════ */
-    .hero-box {
-        background: linear-gradient(135deg,
-            rgba(99,102,241,0.9) 0%,
-            rgba(139,92,246,0.85) 50%,
-            rgba(168,85,247,0.8) 100%);
-        border-radius: 20px;
-        padding: 36px 40px;
-        color: #FFFFFF;
-        box-shadow:
-            0 20px 60px -10px rgba(99,102,241,0.4),
-            0 0 0 1px rgba(255,255,255,0.1) inset;
-        margin-bottom: 28px;
-        position: relative;
-        overflow: hidden;
-    }
-    .hero-box::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
-        pointer-events: none;
-    }
-    .hero-box::after {
-        content: '';
-        position: absolute;
-        bottom: -30%;
-        left: 20%;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%);
-        pointer-events: none;
-    }
-    .hero-eyebrow {
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.6);
-        margin-bottom: 8px;
-    }
-    .hero-title {
-        font-size: 2.4rem;
-        font-weight: 900;
-        letter-spacing: -0.03em;
-        line-height: 1.1;
-        margin-bottom: 10px;
-        color: #FFFFFF;
-    }
-    .hero-title span { color: #FDE68A; }
-    .hero-subtitle {
-        font-size: 1rem;
-        color: rgba(255,255,255,0.72);
-        margin-bottom: 22px;
-        font-weight: 400;
-        line-height: 1.6;
-        max-width: 680px;
-    }
-    .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-    .pro-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: rgba(255,255,255,0.14);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.25);
-        color: rgba(255,255,255,0.9);
-        padding: 5px 13px;
-        border-radius: 9999px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.01em;
-        transition: background 0.2s;
-    }
-    .pro-pill:hover { background: rgba(255,255,255,0.22); }
-
-    /* ══════════════════════════════════════════════════════
-       SECTION HEADER
-    ══════════════════════════════════════════════════════ */
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-    .section-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        flex-shrink: 0;
-    }
-    .section-icon-blue { background: linear-gradient(135deg, #3B82F6, #6366F1); }
-    .section-icon-green { background: linear-gradient(135deg, #10B981, #059669); }
-    .section-icon-purple { background: linear-gradient(135deg, #8B5CF6, #A855F7); }
-    .section-icon-orange { background: linear-gradient(135deg, #F59E0B, #EF4444); }
-    .section-title {
-        font-size: 1.7rem;
-        font-weight: 800;
-        color: #F1F5F9 !important;
-        letter-spacing: -0.02em;
-    }
-    .section-subtitle {
-        font-size: 0.9rem;
-        color: #64748B !important;
-        margin-top: 2px;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       GLASS CARD — Universal Premium Card
-    ══════════════════════════════════════════════════════ */
-    .glass-card {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 16px;
-        padding: 24px;
-        backdrop-filter: blur(20px);
-        box-shadow: 0 4px 24px rgba(0,0,0,0.2);
-        margin-bottom: 16px;
-    }
-    .glass-card-sm {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.07);
-        border-radius: 12px;
-        padding: 16px 20px;
-        margin-bottom: 12px;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       STAT CARDS — Dashboard Metrics
-    ══════════════════════════════════════════════════════ */
-    .stat-card {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.07);
-        border-radius: 16px;
-        padding: 22px 20px;
-        text-align: left;
-        position: relative;
-        overflow: hidden;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .stat-card:hover {
-        border-color: rgba(99,102,241,0.3);
-        box-shadow: 0 8px 30px rgba(99,102,241,0.12);
-    }
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0; right: 0;
-        width: 80px; height: 80px;
-        border-radius: 50%;
-        opacity: 0.07;
-        transform: translate(30%, -30%);
-    }
-    .stat-icon {
-        font-size: 1.5rem;
-        margin-bottom: 12px;
-        display: block;
-    }
-    .stat-label {
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #64748B;
-        margin-bottom: 6px;
-    }
-    .stat-value {
-        font-size: 2.6rem;
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -0.03em;
-        margin-bottom: 4px;
-    }
-    .stat-sublabel {
-        font-size: 0.78rem;
-        color: #475569;
-        margin-top: 4px;
-    }
-    .stat-blue .stat-value { color: #60A5FA; }
-    .stat-red .stat-value { color: #F87171; }
-    .stat-green .stat-value { color: #34D399; }
-    .stat-purple .stat-value { color: #A78BFA; }
-    .stat-amber .stat-value { color: #FCD34D; }
-    .stat-blue::before { background: #3B82F6; }
-    .stat-red::before { background: #EF4444; }
-    .stat-green::before { background: #10B981; }
-    .stat-purple::before { background: #8B5CF6; }
-    .stat-amber::before { background: #F59E0B; }
-
-    /* ══════════════════════════════════════════════════════
-       PIPELINE FLOW
-    ══════════════════════════════════════════════════════ */
-    .pipeline-bar {
-        background: rgba(99,102,241,0.08);
-        border: 1px solid rgba(99,102,241,0.2);
-        border-radius: 12px;
-        padding: 14px 20px;
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: #A5B4FC;
-        margin-bottom: 20px;
-        text-align: center;
-        letter-spacing: 0.01em;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       RESULT CARD — Detection Studio
-    ══════════════════════════════════════════════════════ */
-    .result-card {
-        background: rgba(255,255,255,0.04);
-        border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.08);
-        padding: 32px 36px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        margin: 20px 0;
-        position: relative;
-        overflow: hidden;
-    }
-    .result-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 4px;
-    }
-    .result-card-mis { border-left: 5px solid #EF4444; }
-    .result-card-mis::before { background: linear-gradient(90deg, #EF4444, #DC2626); }
-    .result-card-nonmis { border-left: 5px solid #10B981; }
-    .result-card-nonmis::before { background: linear-gradient(90deg, #10B981, #059669); }
-
-    .result-verdict-mis {
-        font-size: 2.2rem;
-        font-weight: 900;
-        color: #F87171;
-        letter-spacing: -0.02em;
-        line-height: 1;
-    }
-    .result-verdict-nonmis {
-        font-size: 2.2rem;
-        font-weight: 900;
-        color: #34D399;
-        letter-spacing: -0.02em;
-        line-height: 1;
-    }
-    .result-label {
-        font-size: 0.68rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #475569;
-        margin-bottom: 4px;
-        margin-top: 16px;
-    }
-    .result-value {
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: #E2E8F0;
-        line-height: 1.5;
-    }
-    .result-evidence {
-        display: inline-block;
-        background: rgba(239,68,68,0.15);
-        color: #FCA5A5;
-        font-weight: 700;
-        padding: 4px 14px;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        border: 1px solid rgba(239,68,68,0.3);
-    }
-
-    /* ══════════════════════════════════════════════════════
-       STEP PROGRESS TRACKER
-    ══════════════════════════════════════════════════════ */
-    .step-item {
-        font-size: 0.9rem;
-        padding: 6px 0;
-        color: #475569;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .step-done {
-        color: #34D399 !important;
-        font-weight: 600;
-    }
-    .step-pending {
-        color: #FCD34D !important;
-        font-weight: 600;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       GEMINI EXPLANATION BOX
-    ══════════════════════════════════════════════════════ */
-    .gemini-box {
-        background: linear-gradient(135deg,
-            rgba(99,102,241,0.08) 0%,
-            rgba(139,92,246,0.08) 100%);
-        border: 1px solid rgba(99,102,241,0.25);
-        border-radius: 16px;
-        padding: 22px 26px;
-        margin: 20px 0;
-        box-shadow: 0 4px 20px rgba(99,102,241,0.1);
-    }
-    .gemini-header {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #A5B4FC !important;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .gemini-unavail {
-        background: rgba(245,158,11,0.1);
-        border: 1px solid rgba(245,158,11,0.3);
-        border-radius: 12px;
-        padding: 14px 18px;
-        color: #FDE68A;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       PREDICTION BOX — Legacy (ASR / Demo tab)
-    ══════════════════════════════════════════════════════ */
-    .prediction-box {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 14px;
-        padding: 22px 26px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        margin: 12px 0;
-    }
-    .pred-header {
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #475569;
-        font-weight: 700;
-        margin-bottom: 4px;
-        margin-top: 12px;
-    }
-    .pred-val-mis { font-size: 1.8rem; font-weight: 800; color: #F87171; margin-bottom: 4px; }
-    .pred-val-nonmis { font-size: 1.8rem; font-weight: 800; color: #34D399; margin-bottom: 4px; }
-    .pred-category { font-size: 1.3rem; font-weight: 700; color: #E2E8F0; margin-bottom: 4px; }
-    .pred-why { font-size: 0.95rem; color: #94A3B8; line-height: 1.6; }
-    .pred-evidence {
-        font-size: 0.92rem;
-        font-weight: 600;
-        color: #FCA5A5;
-        background: rgba(239,68,68,0.12);
-        padding: 5px 12px;
-        border-radius: 8px;
-        display: inline-block;
-        border: 1px solid rgba(239,68,68,0.25);
-    }
-
-    /* ══════════════════════════════════════════════════════
-       DASHBOARD METRIC CARDS
-    ══════════════════════════════════════════════════════ */
-    .dash-metric {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.07);
-        border-radius: 14px;
-        padding: 20px 18px;
-        text-align: center;
-        transition: border-color 0.2s, transform 0.2s;
-    }
-    .dash-metric:hover {
-        border-color: rgba(99,102,241,0.35);
-        transform: translateY(-2px);
-    }
-    .dash-metric-label {
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-weight: 700;
-        color: #475569;
-        margin-bottom: 8px;
-    }
-    .dash-metric-val {
-        font-size: 2.4rem;
-        font-weight: 900;
-        line-height: 1.1;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       KEY POOL BADGES
-    ══════════════════════════════════════════════════════ */
-    .key-chip {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        margin: 2px 3px;
-        letter-spacing: 0.02em;
-    }
-    .key-chip-active {
-        background: rgba(16,185,129,0.15);
-        color: #34D399;
-        border: 1px solid rgba(16,185,129,0.3);
-    }
-    .key-chip-cooling {
-        background: rgba(245,158,11,0.15);
-        color: #FCD34D;
-        border: 1px solid rgba(245,158,11,0.3);
-    }
-    .key-pool-box {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.07);
-        border-radius: 12px;
-        padding: 14px 16px;
-        margin-top: 10px;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       STATUS BADGES
-    ══════════════════════════════════════════════════════ */
+    /* Minimal Badges */
     .badge {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        padding: 4px 12px;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
+        gap: 4px;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 600;
     }
     .badge-green {
-        background: rgba(16,185,129,0.15);
-        color: #34D399;
-        border: 1px solid rgba(16,185,129,0.3);
-    }
-    .badge-red {
-        background: rgba(239,68,68,0.15);
-        color: #F87171;
-        border: 1px solid rgba(239,68,68,0.3);
+        background-color: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(16, 185, 129, 0.3);
     }
     .badge-yellow {
-        background: rgba(245,158,11,0.15);
-        color: #FCD34D;
-        border: 1px solid rgba(245,158,11,0.3);
+        background-color: rgba(245, 158, 11, 0.15);
+        color: #fcd34d;
+        border: 1px solid rgba(245, 158, 11, 0.3);
     }
     .badge-blue {
-        background: rgba(99,102,241,0.15);
-        color: #A5B4FC;
-        border: 1px solid rgba(99,102,241,0.3);
-    }
-    .badge-purple {
-        background: rgba(139,92,246,0.15);
-        color: #C4B5FD;
-        border: 1px solid rgba(139,92,246,0.3);
+        background-color: rgba(59, 130, 246, 0.15);
+        color: #93c5fd;
+        border: 1px solid rgba(59, 130, 246, 0.3);
     }
 
-    /* ══════════════════════════════════════════════════════
-       DEMO ALERT
-    ══════════════════════════════════════════════════════ */
-    .demo-alert {
-        background: rgba(245,158,11,0.1);
-        color: #FDE68A;
-        padding: 14px 18px;
-        border-radius: 12px;
-        border-left: 4px solid #F59E0B;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 16px;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       METRIC CARDS (Legacy)
-    ══════════════════════════════════════════════════════ */
-    .metric-card {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.07);
-        border-radius: 12px;
-        padding: 14px;
-        text-align: center;
-    }
-    .metric-label { font-size: 0.82rem; color: #64748B; font-weight: 600; }
-    .metric-val { font-size: 1.8rem; font-weight: 700; color: #E2E8F0; }
-
-    /* Detection Studio Header */
-    .ds-header {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #F1F5F9 !important;
-        margin-bottom: 4px;
-        letter-spacing: -0.02em;
-    }
-    .ds-subtitle {
-        font-size: 0.95rem;
-        color: #64748B !important;
-        margin-bottom: 20px;
-    }
-
-    /* ══════════════════════════════════════════════════════
-       SIDEBAR EXTRAS
-    ══════════════════════════════════════════════════════ */
-    .sidebar-brand {
-        text-align: center;
-        padding: 20px 10px 16px;
-    }
-    .sidebar-brand-icon {
-        font-size: 2.5rem;
-        display: block;
-        margin-bottom: 8px;
-        filter: drop-shadow(0 0 12px rgba(99,102,241,0.6));
-    }
-    .sidebar-brand-name {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: #E2E8F0;
-        letter-spacing: -0.01em;
-    }
-    .sidebar-brand-sub {
-        font-size: 0.75rem;
-        color: #475569;
-        font-weight: 500;
-    }
-    .sidebar-nav-label {
-        font-size: 0.7rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #475569;
-        margin-bottom: 8px;
-        padding: 0 4px;
-    }
-    .nav-item {
+    /* Progress step styling */
+    .pipeline-step {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 8px 12px;
-        border-radius: 10px;
+        gap: 8px;
+        padding: 6px 0;
         font-size: 0.85rem;
-        font-weight: 600;
-        color: #94A3B8;
-        margin-bottom: 2px;
-        border: 1px solid transparent;
+        color: var(--color-text-muted);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
     }
-    .nav-item:hover {
-        background: rgba(255,255,255,0.04);
-        color: #E2E8F0;
+    .step-done {
+        color: #34d399 !important;
+        font-weight: 500;
+    }
+    .step-pending {
+        color: #fcd34d !important;
+        font-weight: 500;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Modern Creative Hero Banner Header
+# Product Header
 gem_pool_status = key_manager.get_pool_status("gemini")
 gem_keys_count = gem_pool_status["total_keys"]
 
 st.markdown(
     f"""
-    <div class="hero-box">
-        <div class="hero-eyebrow">🎓 Research Platform · Tamil NLP · v2.0</div>
-        <div class="hero-title">Tamil <span>Misogyny</span> Detection Platform</div>
-        <div class="hero-subtitle">
-            Production-grade multimodal speech analysis system · Real-time Tamil ASR via ElevenLabs Scribe v2 ·
-            Context-aware NLP classification · Gemini 2.5 Flash explanation engine
+    <div class="app-header">
+        <div class="app-title">Tamil Speech Misogyny Detection System</div>
+        <div class="app-desc">
+            An end-to-end audio speech processing platform. Isolates audio from Tamil media, transcribes Tamil speech via ElevenLabs Scribe v2, classifies misogyny categories with multilingual sentence embeddings, and generates transparent linguistic explanations via Gemini LLM.
         </div>
-        <div class="hero-tags">
-            <span class="pro-pill">🔒 Audio-Only Pipeline</span>
-            <span class="pro-pill">⚡ ElevenLabs Scribe v2</span>
-            <span class="pro-pill">🧠 Multilingual-E5 NLP</span>
-            <span class="pro-pill">🤖 Gemini 2.5 Flash</span>
-            <span class="pro-pill">🔑 {gem_keys_count}-Key Pool · Auto-Failover</span>
-            <span class="pro-pill">📊 10K Tamil Dataset</span>
+        <div class="meta-badge-row">
+            <span class="meta-tag meta-tag-blue">Audio-Only Pipeline</span>
+            <span class="meta-tag">ElevenLabs Scribe v2</span>
+            <span class="meta-tag">Multilingual-E5 Classifier</span>
+            <span class="meta-tag">Gemini 2.5 Flash</span>
+            <span class="meta-tag">10,000 Sample Dataset</span>
+            <span class="meta-tag">{gem_keys_count}-Key Failover Pool</span>
         </div>
     </div>
     """,
@@ -842,80 +507,61 @@ st.markdown(
 ffmpeg_installed = check_ffmpeg_installed()
 device_str = get_system_device().upper()
 
-# Sidebar — Premium Dark Navigation
+# Sidebar — Clean Functional Navigation
 st.sidebar.markdown(
     """
-    <div class="sidebar-brand">
-        <span class="sidebar-brand-icon">🎙️</span>
-        <div class="sidebar-brand-name">Tamil Misogyny AI</div>
-        <div class="sidebar-brand-sub">Multimodal Detection System · v2.0</div>
+    <div class="sidebar-header">
+        <div class="sidebar-title">Tamil Misogyny AI</div>
+        <div class="sidebar-subtitle">Speech Analysis & Research Platform</div>
     </div>
     """,
     unsafe_allow_html=True,
 )
-st.sidebar.markdown("<hr style='border-color:rgba(255,255,255,0.06); margin:8px 0 14px;'>", unsafe_allow_html=True)
 
-st.sidebar.markdown(
-    """
-    <div class="sidebar-nav-label">Navigation</div>
-    <div class="nav-item">🏠 &nbsp; Dashboard</div>
-    <div class="nav-item">📚 &nbsp; Training Studio</div>
-    <div class="nav-item">🔍 &nbsp; Detection Studio</div>
-    <div class="nav-item">📐 &nbsp; ASR Evaluation</div>
-    <div class="nav-item">📂 &nbsp; Demo Explorer</div>
-    <div class="nav-item">ℹ️ &nbsp; Model Info</div>
-    <div class="nav-item">📊 &nbsp; Real Dataset</div>
-    """,
-    unsafe_allow_html=True,
-)
-st.sidebar.markdown("<hr style='border-color:rgba(255,255,255,0.06); margin:14px 0;'>", unsafe_allow_html=True)
-
-# API Configuration with Multi-Key Pool Telemetry
-with st.sidebar.expander("🔑 Multi-Key Pool Status", expanded=True):
+# Multi-Key Pool Status
+with st.sidebar.expander("API & Key Pool Status", expanded=False):
     gem_status = key_manager.get_pool_status("gemini")
     el_status  = key_manager.get_pool_status("elevenlabs")
 
     st.markdown(
         f"""
-        <div class="key-pool-box">
-            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#475569;margin-bottom:10px;">🤖 Google Gemini Pool</div>
-            <div style="display:flex;gap:16px;margin-bottom:10px;">
-                <div style="text-align:center;">
-                    <div style="font-size:1.6rem;font-weight:900;color:#60A5FA;line-height:1;">{gem_status['total_keys']}</div>
-                    <div style="font-size:0.68rem;color:#475569;font-weight:600;">TOTAL</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:1.6rem;font-weight:900;color:#34D399;line-height:1;">{gem_status['active_keys']}</div>
-                    <div style="font-size:0.68rem;color:#475569;font-weight:600;">ACTIVE</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:1.6rem;font-weight:900;color:#FCD34D;line-height:1;">{gem_status['cooling_keys']}</div>
-                    <div style="font-size:0.68rem;color:#475569;font-weight:600;">COOLING</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:1.6rem;font-weight:900;color:#A78BFA;line-height:1;">{gem_status['current_index']}</div>
-                    <div style="font-size:0.68rem;color:#475569;font-weight:600;">POINTER</div>
-                </div>
+        <div style="font-size:0.82rem; margin-bottom: 0.6rem;">
+            <div style="color:var(--color-text-primary); font-weight:600; margin-bottom:0.3rem;">Gemini Key Pool</div>
+            <div style="display:flex; justify-content:space-between; color:var(--color-text-secondary); margin-bottom:0.2rem;">
+                <span>Total Keys:</span> <strong>{gem_status['total_keys']}</strong>
             </div>
-            <div style="margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; color:var(--color-text-secondary); margin-bottom:0.2rem;">
+                <span>Active Keys:</span> <strong style="color:#34d399;">{gem_status['active_keys']}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; color:var(--color-text-secondary); margin-bottom:0.4rem;">
+                <span>Cooling Keys:</span> <strong style="color:#fcd34d;">{gem_status['cooling_keys']}</strong>
+            </div>
+        </div>
         """,
         unsafe_allow_html=True,
     )
-    chips_html = ""
+    chips_html = '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:0.6rem;">'
     for i in range(1, gem_status['total_keys'] + 1):
-        chips_html += f'<span class="key-chip key-chip-active">Key-{i}</span>'
-    st.markdown(chips_html + "</div><div style='font-size:0.72rem;color:#475569;'>🔄 Round-Robin · Auto-Skip 429</div></div>", unsafe_allow_html=True)
+        chips_html += f'<span class="meta-tag">Key {i}</span>'
+    st.markdown(chips_html + '</div>', unsafe_allow_html=True)
+    st.caption("Auto-failover enabled for rate limit (429) resilience.")
 
-    st.markdown("<hr style='border-color:rgba(255,255,255,0.06);margin:12px 0;'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color:var(--color-border-subtle); margin:0.6rem 0;'>", unsafe_allow_html=True)
     el_ready = el_status['total_keys'] > 0
-    el_badge = '<span class="badge badge-green">● Ready</span>' if el_ready else '<span class="badge badge-yellow">⚠ Not Set</span>'
+    el_badge = '<span class="badge badge-green">Ready</span>' if el_ready else '<span class="badge badge-yellow">Unset</span>'
     st.markdown(
         f"""
-        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#475569;margin-bottom:6px;">🎙️ ElevenLabs ASR</div>
-        <div style="font-size:0.85rem;color:#94A3B8;margin-bottom:4px;">{el_badge} &nbsp; Scribe v2 · Tamil</div>
+        <div style="font-size:0.82rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--color-text-secondary);">ElevenLabs ASR</span>
+                {el_badge}
+            </div>
+            <div style="font-size:0.75rem; color:var(--color-text-muted); margin-top:2px;">Model: Scribe v2 (Tamil)</div>
+        </div>
         """,
         unsafe_allow_html=True,
     )
+
 
 
 gemini_ready = is_gemini_available()
@@ -957,76 +603,62 @@ classifier_status_text = "✅ Loaded" if classifier is not None else "⚠️ Dem
 llm_status_text = "✅ Gemini 2.5 Flash" if gemini_ready else "⚠️ Demo / Fallback"
 
 def _sb_badge(ok: bool) -> str:
-    return '<span class="badge badge-green">● Live</span>' if ok else '<span class="badge badge-yellow">⚠ Demo</span>'
+    return '<span class="badge badge-green">Ready</span>' if ok else '<span class="badge badge-yellow">Demo</span>'
 
-st.sidebar.markdown("<hr style='border-color:rgba(255,255,255,0.06);margin:8px 0 14px;'>", unsafe_allow_html=True)
+st.sidebar.markdown("<div class='section-label'>System Diagnostics</div>", unsafe_allow_html=True)
 st.sidebar.markdown(
     f"""
-    <div class="sidebar-nav-label">System Status</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 4px;">
-        <span style="font-size:0.82rem;color:#94A3B8;font-weight:600;">🎵 Audio (FFmpeg)</span>
+    <div class="status-row">
+        <span class="status-row-label">Audio Extraction</span>
         {_sb_badge(ffmpeg_installed)}
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 4px;">
-        <span style="font-size:0.82rem;color:#94A3B8;font-weight:600;">🎙️ ASR (Scribe v2)</span>
+    <div class="status-row">
+        <span class="status-row-label">Tamil ASR</span>
         {_sb_badge(has_api_key)}
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 4px;">
-        <span style="font-size:0.82rem;color:#94A3B8;font-weight:600;">🧠 Classifier</span>
+    <div class="status-row">
+        <span class="status-row-label">Text Classifier</span>
         {_sb_badge(classifier is not None)}
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 4px;">
-        <span style="font-size:0.82rem;color:#94A3B8;font-weight:600;">🤖 Gemini LLM</span>
+    <div class="status-row">
+        <span class="status-row-label">Gemini Explanation</span>
         {_sb_badge(gemini_ready)}
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 4px;">
-        <span style="font-size:0.82rem;color:#94A3B8;font-weight:600;">⚙️ Device</span>
-        <span style="font-size:0.78rem;font-weight:700;color:#A78BFA;">{device_str}</span>
+    <div class="status-row">
+        <span class="status-row-label">Device Compute</span>
+        <span style="font-size:0.75rem; font-weight:600; color:var(--color-primary);">{device_str}</span>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-st.sidebar.markdown("<hr style='border-color:rgba(255,255,255,0.06);margin:14px 0;'>", unsafe_allow_html=True)
-with st.sidebar.expander("🔒 Research Constraints", expanded=False):
+st.sidebar.markdown("<hr style='border-color:var(--color-border-subtle); margin:1rem 0;'>", unsafe_allow_html=True)
+with st.sidebar.expander("Research Pipeline Rules", expanded=False):
     st.markdown(
         """
-        <div style="font-size:0.82rem;color:#94A3B8;line-height:2;">
-        🎵 &nbsp; Audio / Speech Only<br>
-        🚫 &nbsp; No video frame extraction<br>
-        🚫 &nbsp; No computer vision<br>
-        🚫 &nbsp; No object detection<br>
-        🎙️ &nbsp; ElevenLabs Scribe v2 ASR<br>
-        🗣️ &nbsp; Pure Tamil transcript only<br>
-        🧠 &nbsp; Semantic text classifier
+        <div style="font-size:0.8rem; color:var(--color-text-secondary); line-height:1.7;">
+        • <strong>Audio-Only:</strong> Video frames are not processed.<br>
+        • <strong>Pure Tamil ASR:</strong> No translation to English.<br>
+        • <strong>Local NLP:</strong> Multilingual embeddings.<br>
+        • <strong>LLM Role:</strong> Sociolinguistic explanation only.
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-
-
-# SECTION 9: PRESENTATION MODE (Prominent quick bar)
-st.markdown("### ⚡ Fast Presentation Mode")
-col_p1, col_p2 = st.columns([1, 3])
+# SECTION 9: PRESENTATION MODE (Clean quick-action bar)
+col_p1, col_p2 = st.columns([1, 4])
 with col_p1:
-    btn_pres_demo = st.button("🚀 Presentation Demo", type="secondary", use_container_width=True)
+    btn_pres_demo = st.button("Run Quick Demo", type="secondary", use_container_width=True)
 with col_p2:
-    st.caption("Click to instantly simulate the full pipeline with a verified demonstration Tamil speech sample.")
+    st.caption("Simulate end-to-end pipeline with a verified demonstration Tamil speech sample.")
 
 if btn_pres_demo:
     st.session_state["pres_active"] = True
     st.session_state["current_transcript"] = "பெண்களின் மதிப்பு அவர்களின் அழகில் மட்டும் இல்லை என்று நாம் புரிந்து கொள்ள வேண்டும்."
 
 if st.session_state.get("pres_active", False):
-    st.markdown(
-        """
-        <div class="demo-alert">
-        ⚡ <b>PRESENTATION DEMO ACTIVE</b> — Fast End-to-End Simulation (Demo Data — Not Final Research Evaluation)
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.info("Presentation Demo Sample Active — Running on simulated audio transcript.")
     pres_text = st.session_state.get("current_transcript", "")
     st.markdown(f"**Tamil Transcript:** `{pres_text}`")
     pres_pred = classifier.predict(pres_text) if classifier else {
@@ -1075,282 +707,207 @@ if st.session_state.get("pres_active", False):
 
 # Main Multi-Section Tabs
 tab_dashboard, tab_training, tab_detection, tab_asr_eval, tab_demo, tab_model_info, tab_real_dataset = st.tabs([
-    "🏠 Dashboard",
-    "📚 Training Studio",
-    "🔍 Detection Studio",
-    "📐 ASR Evaluation",
-    "📂 Demo Dataset Explorer",
-    "ℹ️ Model Information",
-    "🔬 Real Research Dataset",
+    "Dashboard",
+    "Training Studio",
+    "Detection Studio",
+    "ASR Evaluation",
+    "Demo Dataset",
+    "Model Information",
+    "Research Dataset",
 ])
 
 # -------------------------------------------------------------
 # TAB 0: DASHBOARD
 # -------------------------------------------------------------
 with tab_dashboard:
-    st.markdown(
-        """
-        <div class="section-header">
-            <div class="section-icon section-icon-blue">🏠</div>
-            <div>
-                <div class="section-title">Dashboard</div>
-                <div class="section-subtitle">System overview — dataset metrics, model status & pipeline health</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("### System Dashboard")
+    st.caption("Overview of the dataset distribution, model status, and pipeline architecture.")
 
-    # Dataset Metric Cards — Premium stat-card layout
+
+    # Dataset Metrics
     dash_summary = get_dataset_summary()
     model_loaded = classifier is not None
 
     dc1, dc2, dc3, dc4 = st.columns(4)
-    dc1.markdown(
-        f'<div class="stat-card stat-blue"><span class="stat-label">📂 Total Dataset</span>'
-        f'<div class="stat-value">{dash_summary["total_samples"]}</div>'
-        f'<div class="stat-sublabel">Labelled Tamil samples</div></div>',
-        unsafe_allow_html=True,
-    )
-    dc2.markdown(
-        f'<div class="stat-card stat-red"><span class="stat-label">🚨 Misogynistic</span>'
-        f'<div class="stat-value">{dash_summary["misogynistic_count"]}</div>'
-        f'<div class="stat-sublabel">Flagged samples</div></div>',
-        unsafe_allow_html=True,
-    )
-    dc3.markdown(
-        f'<div class="stat-card stat-green"><span class="stat-label">✅ Non-Misogynistic</span>'
-        f'<div class="stat-value">{dash_summary["non_misogynistic_count"]}</div>'
-        f'<div class="stat-sublabel">Clean samples</div></div>',
-        unsafe_allow_html=True,
-    )
-    dc4.markdown(
-        f'<div class="stat-card stat-{"green" if model_loaded else "amber"}">'
-        f'<span class="stat-label">🤖 Model Status</span>'
-        f'<div class="stat-value" style="font-size:1.5rem;">{"Loaded" if model_loaded else "Demo"}</div>'
-        f'<div class="stat-sublabel">Multilingual-E5 NLP</div></div>',
-        unsafe_allow_html=True,
-    )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ── Category Breakdown ──────────────────────────────────────────
-    st.markdown(
-        """
-        <div class="section-header" style="margin-top:12px;">
-            <div class="section-icon section-icon-orange">📊</div>
-            <div>
-                <div class="section-title" style="font-size:1.3rem;">Dataset Category Breakdown</div>
-                <div class="section-subtitle">Distribution of misogyny categories in the training dataset</div>
+    with dc1:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title">Total Dataset</div>
+                <div class="metric-panel-number">{dash_summary['total_samples']:,}</div>
+                <div class="metric-panel-desc">Curated Tamil research samples</div>
             </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+            """,
+            unsafe_allow_html=True,
+        )
+    with dc2:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title" style="color:#f87171;">Misogynistic</div>
+                <div class="metric-panel-number" style="color:#f87171;">{dash_summary['misogynistic_count']:,}</div>
+                <div class="metric-panel-desc">Hostile or biased instances</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with dc3:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title" style="color:#34d399;">Non-Misogynistic</div>
+                <div class="metric-panel-number" style="color:#34d399;">{dash_summary['non_misogynistic_count']:,}</div>
+                <div class="metric-panel-desc">Neutral / respectful speech</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with dc4:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title">Classifier Model</div>
+                <div class="metric-panel-number" style="font-size:1.45rem; color:{'#34d399' if model_loaded else '#fcd34d'};">
+                    {'Ready' if model_loaded else 'Demo Mode'}
+                </div>
+                <div class="metric-panel-desc">Multilingual-E5 + LogReg</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    st.markdown("<div style='margin: 1.5rem 0 0.5rem 0; font-size: 0.95rem; font-weight: 600; color: var(--color-text-primary);'>Category Distribution</div>", unsafe_allow_html=True)
+    st.caption("Distribution of labeled categories across the dataset.")
 
     cat_dist  = dash_summary.get("category_distribution", {})
     total_s   = dash_summary["total_samples"] or 1
 
-    # Category config: name → (icon, color)
-    CAT_CFG = {
-        "OBJECTIFICATION":  ("🧍", "#F87171"),
-        "STEREOTYPING":     ("🏷️",  "#FBBF24"),
-        "SHAMING":          ("😔", "#A78BFA"),
-        "VIOLENCE":         ("⚠️",  "#EF4444"),
-        "GENERAL_ABUSE":    ("🚨", "#FB923C"),
-        "NONE":             ("✅", "#34D399"),
-        "NON_MISOGYNISTIC": ("✅", "#34D399"),
+    CAT_COLORS = {
+        "OBJECTIFICATION":  "#f87171",
+        "STEREOTYPING":     "#fbbf24",
+        "SHAMING":          "#a78bfa",
+        "VIOLENCE":         "#ef4444",
+        "GENERAL_ABUSE":    "#fb923c",
+        "NONE":             "#34d399",
+        "NON_MISOGYNISTIC": "#34d399",
     }
 
     mis_cats  = {k: v for k, v in cat_dist.items() if k not in ("NONE", "NON_MISOGYNISTIC")}
     none_cnt  = cat_dist.get("NONE", 0) + cat_dist.get("NON_MISOGYNISTIC", 0)
 
-    # Row 1 — misogyny categories
     cat_keys = list(mis_cats.keys())
     if cat_keys:
         cols = st.columns(len(cat_keys))
         for col, cat in zip(cols, cat_keys):
-            cnt   = mis_cats[cat]
-            pct   = round(cnt / total_s * 100, 1)
-            icon, color = CAT_CFG.get(cat, ("🔹", "#94A3B8"))
-            col.markdown(
-                f"""
-                <div class="stat-card" style="border-left:4px solid {color}; padding:16px 14px;">
-                    <div class="stat-label">{icon} {cat}</div>
-                    <div class="stat-value" style="font-size:2rem; color:{color};">{cnt:,}</div>
-                    <div class="stat-sublabel">{pct}% of dataset</div>
-                    <div style="margin-top:10px;background:rgba(255,255,255,0.06);border-radius:6px;height:6px;">
-                        <div style="width:{pct}%;background:{color};height:6px;border-radius:6px;"></div>
+            cnt = mis_cats[cat]
+            pct = round(cnt / total_s * 100, 1)
+            color = CAT_COLORS.get(cat, "#3b82f6")
+            with col:
+                st.markdown(
+                    f"""
+                    <div class="category-cell">
+                        <div class="category-cell-header">
+                            <span class="category-name">{cat.replace('_', ' ').title()}</span>
+                            <span class="category-count">{cnt:,}</span>
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:6px;">{pct}% of data</div>
+                        <div class="category-bar-bg">
+                            <div class="category-bar-fill" style="width:{pct}%; background-color:{color};"></div>
+                        </div>
                     </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+                    """,
+                    unsafe_allow_html=True,
+                )
 
-    # Row 2 — NON-MISOGYNISTIC total
     if none_cnt > 0:
         pct_none = round(none_cnt / total_s * 100, 1)
         st.markdown(
             f"""
-            <div class="stat-card stat-green" style="margin-top:12px;border-left:4px solid #34D399;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <div>
-                        <div class="stat-label">✅ NON-MISOGYNISTIC (NONE)</div>
-                        <div class="stat-value" style="font-size:2rem;">{none_cnt:,}</div>
-                        <div class="stat-sublabel">{pct_none}% of dataset — clean / neutral Tamil speech</div>
-                    </div>
-                    <div style="font-size:3rem;opacity:0.3;">🟢</div>
+            <div class="category-cell" style="margin-top:0.6rem;">
+                <div class="category-cell-header">
+                    <span class="category-name">Non-Misogynistic (Neutral Speech)</span>
+                    <span class="category-count" style="color:#34d399;">{none_cnt:,}</span>
                 </div>
-                <div style="margin-top:10px;background:rgba(255,255,255,0.06);border-radius:6px;height:6px;">
-                    <div style="width:{pct_none}%;background:#34D399;height:6px;border-radius:6px;"></div>
+                <div style="font-size:0.75rem; color:var(--color-text-muted); margin-bottom:6px;">{pct_none}% of dataset — clean conversational Tamil samples</div>
+                <div class="category-bar-bg">
+                    <div class="category-bar-fill" style="width:{pct_none}%; background-color:#34d399;"></div>
                 </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color:var(--color-border-subtle); margin:1.75rem 0 1.25rem 0;'>", unsafe_allow_html=True)
 
-    # ── Pipeline Architecture ────────────────────────────────────────
-    st.markdown(
-        """
-        <div class="section-header">
-            <div class="section-icon section-icon-blue">🔬</div>
-            <div>
-                <div class="section-title" style="font-size:1.3rem;">System Pipeline Architecture</div>
-                <div class="section-subtitle">End-to-end audio-only Tamil speech misogyny detection flow</div>
+    # ── Pipeline & Status Grid ──────────────────────────────────────────
+    col_pipe, col_pool = st.columns([3, 2])
+    with col_pipe:
+        st.markdown("#### System Pipeline")
+        st.caption("Deterministic stages from video upload to natural language explanation.")
+        st.code(
+            """
+Input Video (MP4 / MKV / MOV)
+  └─► Audio Extractor (FFmpeg -vn, 16kHz mono WAV)
+        └─► Tamil ASR (ElevenLabs Scribe v2)
+              └─► Tamil Transcript
+                    ├─► Classifier (Multilingual-E5 + LogReg)
+                    │     └─► Label & Category
+                    └─► Explainer (Gemini 2.5 Flash)
+                          └─► Sociolinguistic Context & Tamil Summary
+            """,
+            language=None,
+        )
+
+    with col_pool:
+        st.markdown("#### Operational Health")
+        st.caption("Live status of system services and credential failover.")
+
+        g_status = key_manager.get_pool_status("gemini")
+        st.markdown(
+            f"""
+            <div style="background-color:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-radius:8px; padding:1rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                    <span style="font-size:0.85rem; color:var(--color-text-secondary); font-weight:500;">Gemini Key Pool</span>
+                    <span class="badge badge-green">Round-Robin Active</span>
+                </div>
+                <div style="display:flex; gap:1.25rem; font-size:0.82rem; margin-bottom:0.85rem; color:var(--color-text-muted);">
+                    <div>Total: <strong style="color:var(--color-text-primary);">{g_status['total_keys']}</strong></div>
+                    <div>Active: <strong style="color:#34d399;">{g_status['active_keys']}</strong></div>
+                    <div>Cooling: <strong style="color:#fcd34d;">{g_status['cooling_keys']}</strong></div>
+                </div>
+                <hr style="border-color:var(--color-border-subtle); margin:0.6rem 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.4rem;">
+                    <span style="font-size:0.85rem; color:var(--color-text-secondary); font-weight:500;">ASR Service</span>
+                    <span class="badge {'badge-green' if has_api_key else 'badge-yellow'}">{'Connected' if has_api_key else 'Fallback Mode'}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.6rem;">
+                    <span style="font-size:0.85rem; color:var(--color-text-secondary); font-weight:500;">FFmpeg Engine</span>
+                    <span class="badge {'badge-green' if ffmpeg_installed else 'badge-yellow'}">{'Installed' if ffmpeg_installed else 'Missing'}</span>
+                </div>
             </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.code(
-        """
-Tamil Video (MP4 / MKV / AVI / MOV)
-    ↓
-FFmpeg Audio Extraction  (-vn · 16kHz · Mono WAV)
-    ↓  [Voice isolation optional]
-ElevenLabs Scribe v2  (Tamil ASR · model: scribe_v2 · lang: tam)
-    ↓
-Tamil Speech Transcript  (Pure Tamil text · zero English translation)
-    ↓
-Text Classifier  (multilingual-e5-small + Logistic Regression)
-    ↓
-┌─────────────────────────────────────────┐
-│  MISOGYNISTIC / NON-MISOGYNISTIC        │
-│  Category: SHAMING | STEREOTYPING |     │
-│           OBJECTIFICATION | VIOLENCE |  │
-│           GENERAL_ABUSE | NONE          │
-└─────────────────────────────────────────┘
-    ↓
-Google Gemini 2.5 Flash  (Explanation · Cultural Context · Evidence)
-    ↓
-Final Result + தமிழ் விளக்கம்
-        """,
-        language=None,
-    )
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ── Component Status ─────────────────────────────────────────────
-    st.markdown(
-        """
-        <div class="section-header">
-            <div class="section-icon section-icon-green">⚡</div>
-            <div>
-                <div class="section-title" style="font-size:1.3rem;">Component Status</div>
-                <div class="section-subtitle">Live health check of all pipeline modules</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    s1, s2, s3, s4 = st.columns(4)
-    def _comp_card(col, icon, name, status_ok, detail):
-        badge = '<span class="badge badge-green">● Live</span>' if status_ok else '<span class="badge badge-yellow">⚠ Demo</span>'
-        col.markdown(
-            f'<div class="stat-card" style="padding:18px 16px;">'
-            f'<div style="font-size:1.6rem;margin-bottom:8px;">{icon}</div>'
-            f'<div class="stat-label" style="margin-bottom:6px;">{name}</div>'
-            f'{badge}<div style="margin-top:8px;font-size:0.75rem;color:#475569;">{detail}</div></div>',
+            """,
             unsafe_allow_html=True,
         )
-    _comp_card(s1, "🎵", "Audio Isolation", ffmpeg_installed, "FFmpeg · 16kHz Mono WAV")
-    _comp_card(s2, "🎙️", "ASR Engine", has_api_key, "ElevenLabs Scribe v2 · Tamil")
-    _comp_card(s3, "🧠", "Classifier", classifier is not None, "multilingual-E5 + LogReg")
-    _comp_card(s4, "🤖", "Gemini LLM", gemini_ready, "Gemini 2.5 Flash · Explanation")
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ── Multi-Key Pool ───────────────────────────────────────────────
-    st.markdown(
-        """
-        <div class="section-header">
-            <div class="section-icon section-icon-purple">🔑</div>
-            <div>
-                <div class="section-title" style="font-size:1.3rem;">High-Availability Multi-Key Pool</div>
-                <div class="section-subtitle">Round-robin rotation · 429 auto-failover · Zero credential exposure</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    g_status = key_manager.get_pool_status("gemini")
-    e_status = key_manager.get_pool_status("elevenlabs")
-
-    kc1, kc2, kc3, kc4 = st.columns(4)
-    kc1.markdown(
-        f'<div class="stat-card stat-blue"><span class="stat-label">🔑 Total Keys</span>'
-        f'<div class="stat-value">{g_status["total_keys"]}</div>'
-        f'<div class="stat-sublabel">Gemini pool</div></div>',
-        unsafe_allow_html=True,
-    )
-    kc2.markdown(
-        f'<div class="stat-card stat-green"><span class="stat-label">🟢 Active Keys</span>'
-        f'<div class="stat-value">{g_status["active_keys"]}</div>'
-        f'<div class="stat-sublabel">Ready to serve</div></div>',
-        unsafe_allow_html=True,
-    )
-    kc3.markdown(
-        f'<div class="stat-card stat-amber"><span class="stat-label">⏳ Cooling Down</span>'
-        f'<div class="stat-value">{g_status["cooling_keys"]}</div>'
-        f'<div class="stat-sublabel">60s cooldown</div></div>',
-        unsafe_allow_html=True,
-    )
-    kc4.markdown(
-        f'<div class="stat-card stat-purple"><span class="stat-label">🎯 Strategy</span>'
-        f'<div class="stat-value" style="font-size:1.2rem;letter-spacing:0;">Round-Robin</div>'
-        f'<div class="stat-sublabel">Auto-failover</div></div>',
-        unsafe_allow_html=True,
-    )
-
-    with st.expander("🔍 Failover Pool Telemetry (Zero Credential Exposure)", expanded=False):
-        st.markdown(
-            "• **Key Discovery:** Loads `API_KEY_1`…`N` and `GEMINI_API_KEY_1`…`N` from `.env` at startup.\n"
-            "• **Memory Isolation:** Raw credentials exist exclusively in private process memory — never written to logs.\n"
-            "• **Fault Tolerance:** On `429 Rate Limit` or quota error → 60-second cooldown → instant failover to next key.\n"
-            "• **Bounded Retries:** Tries each pool key once, returns clean API-unavailable error if all fail."
-        )
 
 
 # -------------------------------------------------------------
 # TAB 0: TRAINING STUDIO (Continuous Data Collection & Retraining)
 # -------------------------------------------------------------
 with tab_training:
-    st.header("📚 Training Studio — Data Collection & Model Retraining")
-    st.caption("Continuously add Tamil videos, extract audio, transcribe using ElevenLabs Scribe v2, verify & label, store in Excel, and retrain the classifier.")
+    st.markdown("### Training Studio")
+    st.caption("Continuously collect Tamil speech samples, verify transcripts, annotate abuse categories, and retrain the classifier.")
 
-    st.markdown("---")
-    st.subheader("1. Add New Training Sample")
+    st.markdown("#### 1. Add New Sample")
+    st.caption("Upload a media file or enter verified text directly into the research dataset.")
 
     col_up, col_action = st.columns([1, 1])
 
     with col_up:
         train_video = st.file_uploader(
-            "Upload Tamil Video for Training:",
+            "Video File for Sample:",
             type=["mp4", "mkv", "avi", "mov"],
-            help="Audio track will be extracted (-vn). No video frames are processed.",
+            help="Audio track will be isolated via FFmpeg (-vn). No video frames stored.",
             key="train_video_uploader",
         )
 
@@ -1363,24 +920,30 @@ with tab_training:
 
         with col_action:
             v_dur = get_media_duration(t_video_path)
-            st.markdown(f"**Filename:** `{train_video.name}`")
-            st.markdown(f"**Size:** `{train_video.size / (1024*1024):.2f} MB`")
-            st.markdown(f"**Duration:** `{v_dur:.1f} s`" if v_dur > 0 else "**Duration:** `Unknown`")
-
-            btn_train_extract = st.button("🎵 Extract Audio & Transcribe", type="primary", use_container_width=True, key="btn_train_transcribe")
+            st.markdown(
+                f"""
+                <div style="background-color:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-radius:6px; padding:0.75rem; font-size:0.85rem; margin-bottom:0.75rem;">
+                    <div><strong>File:</strong> <code>{train_video.name}</code></div>
+                    <div><strong>Size:</strong> {train_video.size / (1024*1024):.2f} MB</div>
+                    <div><strong>Duration:</strong> {f'{v_dur:.1f} s' if v_dur > 0 else 'Unknown'}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            btn_train_extract = st.button("Extract Audio & Transcribe", type="primary", use_container_width=True, key="btn_train_transcribe")
 
         if btn_train_extract:
             if train_video.size == 0:
-                st.error("Uploaded video file is empty.")
+                st.error("Uploaded file is empty.")
             else:
-                with st.spinner("Extracting audio with FFmpeg (-vn)..."):
+                with st.spinner("Extracting audio stream..."):
                     try:
                         if ffmpeg_installed:
                             a_out = extract_audio(t_video_path)
                             st.session_state["train_audio_path"] = str(a_out)
-                            st.success(f"✅ Audio extracted: `{a_out.name}` (16 kHz Mono WAV)")
+                            st.success(f"Audio extracted: {a_out.name} (16 kHz mono WAV)")
                         else:
-                            st.warning("FFmpeg missing. Using fallback demo audio.")
+                            st.warning("FFmpeg not found. Using fallback demo audio.")
                             st.session_state["train_audio_path"] = str(AUDIO_DIR / "demo_audio.wav")
                     except Exception as ex:
                         st.error(f"Audio extraction failed: {ex}")
@@ -1388,48 +951,47 @@ with tab_training:
                 # Transcribe with ElevenLabs Scribe v2
                 t_audio = st.session_state.get("train_audio_path")
                 if t_audio:
-                    with st.spinner("Transcribing Tamil speech with ElevenLabs Scribe v2..."):
+                    with st.spinner("Transcribing Tamil speech..."):
                         try:
                             t_transcript = transcribe_tamil_audio(t_audio)
                             if not t_transcript:
                                 t_transcript = "பெண்களின் மதிப்பு அவர்களின் அழகில் மட்டும் இல்லை என்று நாம் புரிந்து கொள்ள வேண்டும்."
                             st.session_state["train_asr_text"] = t_transcript
                             st.session_state["train_manual_text"] = t_transcript
-                            st.success("✅ Tamil speech transcribed successfully!")
+                            st.success("Tamil speech transcribed successfully.")
                         except Exception as ex:
                             err_s = str(ex)
                             st.error(f"ASR error: {err_s}")
                             fallback_seed = "பெண்களின் மதிப்பு அவர்களின் அழகில் மட்டும் இல்லை என்று நாம் புரிந்து கொள்ள வேண்டும்."
                             st.session_state["train_asr_text"] = fallback_seed
                             st.session_state["train_manual_text"] = fallback_seed
-                            st.info("Loaded demo transcript fallback for manual correction.")
 
-    st.markdown("---")
-    st.subheader("2. Human Verification & Annotation")
+    st.markdown("<hr style='border-color:var(--color-border-subtle); margin:1.25rem 0;'>", unsafe_allow_html=True)
+    st.markdown("#### 2. Human Verification & Ground Truth")
 
     curr_asr = st.session_state.get("train_asr_text", "")
     curr_manual = st.session_state.get("train_manual_text", curr_asr)
 
     col_t1, col_t2 = st.columns(2)
     with col_t1:
-        st.markdown("**Original ElevenLabs Scribe v2 Transcript:**")
-        st.info(curr_asr if curr_asr else "Upload video and transcribe above to populate transcript.")
+        st.caption("ElevenLabs Scribe v2 Output:")
+        st.info(curr_asr if curr_asr else "Upload a sample video or paste text on the right.")
 
     with col_t2:
-        st.markdown("**Human-Verified Tamil Transcript (Editable):**")
+        st.caption("Verified Tamil Transcript (Editable):")
         verified_text = st.text_area(
-            "Verify or correct the Tamil transcript:",
+            "Verified Text",
             value=curr_manual,
-            height=120,
+            height=110,
             key="train_verified_input",
-            placeholder="Edit or paste accurate Tamil text here...",
+            placeholder="Edit or paste ground-truth Tamil speech text...",
+            label_visibility="collapsed",
         )
 
-    st.markdown("##### Select Ground Truth Classification:")
     col_lbl, col_cat = st.columns(2)
     with col_lbl:
         sel_label = st.radio(
-            "Misogyny Label:",
+            "Classification Label:",
             options=["MISOGYNISTIC", "NON-MISOGYNISTIC"],
             horizontal=True,
             key="train_label_choice",
@@ -1438,16 +1000,16 @@ with tab_training:
     with col_cat:
         if sel_label == "MISOGYNISTIC":
             mis_cats = [c for c in CATEGORIES if c != "NONE"]
-            sel_category = st.selectbox("Category:", options=mis_cats, key="train_cat_choice")
+            sel_category = st.selectbox("Misogyny Typology:", options=mis_cats, key="train_cat_choice")
         else:
             sel_category = "NONE"
             st.selectbox("Category:", options=["NONE"], disabled=True, key="train_cat_disabled")
 
-    train_notes = st.text_input("Annotation Notes (Optional):", placeholder="Context or source notes...", key="train_notes_input")
+    train_notes = st.text_input("Annotation Notes (Optional):", placeholder="Context or source description...", key="train_notes_input")
 
-    if st.button("💾 Add to Training Dataset", type="primary", use_container_width=True, key="btn_add_sample"):
+    if st.button("Save Sample to Excel Dataset", type="primary", use_container_width=True, key="btn_add_sample"):
         if not verified_text.strip():
-            st.warning("Please provide a verified Tamil transcript before adding.")
+            st.warning("Please provide a verified Tamil transcript before saving.")
         else:
             v_name = train_video.name if train_video else "manual_entry.mp4"
             a_name = Path(st.session_state.get("train_audio_path", "audio.wav")).name
@@ -1460,55 +1022,61 @@ with tab_training:
                 category=sel_category,
                 annotation_notes=train_notes,
             )
-            st.success(f"✅ Successfully added sample as **{record['video_id']}** to `{EXCEL_DATASET_PATH.name}`!")
-            # Reset transcript fields in session
+            st.success(f"Added sample {record['video_id']} to {EXCEL_DATASET_PATH.name}")
             st.session_state["train_asr_text"] = ""
             st.session_state["train_manual_text"] = ""
             rerun_fn = getattr(st, "rerun", getattr(st, "experimental_rerun", None))
             if rerun_fn:
                 rerun_fn()
 
-    st.markdown("---")
-    st.subheader("3. Training Dataset Dashboard")
+    st.markdown("<hr style='border-color:var(--color-border-subtle); margin:1.5rem 0;'>", unsafe_allow_html=True)
+    st.markdown("#### 3. Current Dataset Inventory")
 
     summary = get_dataset_summary()
     c_m1, c_m2, c_m3 = st.columns(3)
-    c_m1.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-label">TOTAL SAMPLES</div>
-            <div class="metric-val" style="color: #2563EB;">{summary['total_samples']}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    c_m2.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-label">MISOGYNISTIC</div>
-            <div class="metric-val" style="color: #DC2626;">{summary['misogynistic_count']}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    c_m3.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-label">NON-MISOGYNISTIC</div>
-            <div class="metric-val" style="color: #16A34A;">{summary['non_misogynistic_count']}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    with c_m1:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title">Total Samples</div>
+                <div class="metric-panel-number">{summary['total_samples']:,}</div>
+                <div class="metric-panel-desc">All saved records</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with c_m2:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title" style="color:#f87171;">Misogynistic</div>
+                <div class="metric-panel-number" style="color:#f87171;">{summary['misogynistic_count']:,}</div>
+                <div class="metric-panel-desc">Target positive class</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with c_m3:
+        st.markdown(
+            f"""
+            <div class="metric-panel">
+                <div class="metric-panel-title" style="color:#34d399;">Non-Misogynistic</div>
+                <div class="metric-panel-number" style="color:#34d399;">{summary['non_misogynistic_count']:,}</div>
+                <div class="metric-panel-desc">Clean / baseline samples</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
+    st.markdown("<div style='margin-top:1rem;'></div>", unsafe_allow_html=True)
     df_excel = load_excel_dataset()
 
     # Search & Filter
-    col_f1, col_f2 = st.columns([2, 1])
+    col_f1, col_f2 = st.columns([3, 1])
     with col_f1:
-        search_query = st.text_input("🔍 Search Transcripts:", placeholder="Search Tamil text or Video ID...", key="train_search_input")
+        search_query = st.text_input("Filter transcripts:", placeholder="Search Tamil text, Video ID, or category...", key="train_search_input", label_visibility="collapsed")
     with col_f2:
-        filter_label = st.selectbox("Filter by Label:", ["ALL", "MISOGYNISTIC", "NON-MISOGYNISTIC"], key="train_filter_label")
+        filter_label = st.selectbox("Label:", ["ALL", "MISOGYNISTIC", "NON-MISOGYNISTIC"], key="train_filter_label", label_visibility="collapsed")
 
     filtered_df = df_excel.copy()
     if filter_label != "ALL":
@@ -1524,94 +1092,89 @@ with tab_training:
 
     st.dataframe(filtered_df, use_container_width=True)
 
-    st.markdown("---")
-    st.subheader("4. Train / Retrain Misogyny Classifier")
-    st.caption("Retrains the Logistic Regression model on the growing Excel dataset using cached multilingual embeddings.")
+    st.markdown("<hr style='border-color:var(--color-border-subtle); margin:1.5rem 0;'>", unsafe_allow_html=True)
+    st.markdown("#### 4. Model Retraining")
+    st.caption("Re-fits the classification head using multilingual sentence embeddings across all stored samples.")
 
-    col_btn_tr, col_info_tr = st.columns([1, 2])
+    col_btn_tr, col_info_tr = st.columns([1, 3])
     with col_btn_tr:
-        btn_train_model = st.button("🚀 Train / Retrain Model", type="primary", use_container_width=True, key="btn_retrain_model")
+        btn_train_model = st.button("Retrain Classifier", type="primary", use_container_width=True, key="btn_retrain_model")
 
     if btn_train_model:
-        with st.spinner("Retraining classification model from Excel dataset..."):
+        with st.spinner("Retraining classification model on dataset..."):
             train_res = retrain_model_from_excel()
 
         if train_res["status"] == "insufficient_data":
-            st.warning(f"⚠️ {train_res['message']}")
+            st.warning(f"Notice: {train_res['message']}")
         elif train_res["status"] == "error":
-            st.error(f"❌ Training error: {train_res['message']}")
+            st.error(f"Training error: {train_res['message']}")
         elif train_res["status"] == "success":
-            st.success("🎉 **Model Successfully Trained & Saved to `models/text_classifier.pkl`!**")
-            st.info(f"Model used: `{train_res.get('model_used')}` | Total samples: {train_res.get('total_samples')}")
+            st.success("Model retrained and saved to models/text_classifier.pkl")
+            st.caption(f"Encoder: {train_res.get('model_used')} | Samples: {train_res.get('total_samples')}")
 
             if train_res.get("metrics_available"):
                 mets = train_res.get("metrics", {})
-                st.markdown("#### Evaluation Metrics (on held-out test split):")
+                st.markdown("##### Held-Out Test Split Metrics (80/20)")
                 m1, m2, m3, m4 = st.columns(4)
-                m1.markdown(
-                    f"""
-                    <div class="metric-card">
-                        <div class="metric-label">Accuracy</div>
-                        <div class="metric-val" style="color: #2563EB;">{mets.get('accuracy', 0):.2%}</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                m2.markdown(
-                    f"""
-                    <div class="metric-card">
-                        <div class="metric-label">Precision</div>
-                        <div class="metric-val" style="color: #059669;">{mets.get('precision', 0):.2%}</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                m3.markdown(
-                    f"""
-                    <div class="metric-card">
-                        <div class="metric-label">Recall</div>
-                        <div class="metric-val" style="color: #D97706;">{mets.get('recall', 0):.2%}</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                m4.markdown(
-                    f"""
-                    <div class="metric-card">
-                        <div class="metric-label">F1-Score</div>
-                        <div class="metric-val" style="color: #7C3AED;">{mets.get('f1_score', 0):.2%}</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                with m1:
+                    st.markdown(
+                        f"""
+                        <div class="metric-panel">
+                            <div class="metric-panel-title">Accuracy</div>
+                            <div class="metric-panel-number" style="color:#60a5fa;">{mets.get('accuracy', 0):.2%}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with m2:
+                    st.markdown(
+                        f"""
+                        <div class="metric-panel">
+                            <div class="metric-panel-title">Precision</div>
+                            <div class="metric-panel-number" style="color:#34d399;">{mets.get('precision', 0):.2%}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with m3:
+                    st.markdown(
+                        f"""
+                        <div class="metric-panel">
+                            <div class="metric-panel-title">Recall</div>
+                            <div class="metric-panel-number" style="color:#fbbf24;">{mets.get('recall', 0):.2%}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with m4:
+                    st.markdown(
+                        f"""
+                        <div class="metric-panel">
+                            <div class="metric-panel-title">F1-Score</div>
+                            <div class="metric-panel-number" style="color:#a78bfa;">{mets.get('f1_score', 0):.2%}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
             else:
-                st.info(f"ℹ️ {train_res.get('disclaimer', 'Trained on all samples. Insufficient data for test split.')}")
+                st.info(f"{train_res.get('disclaimer', 'Trained on full sample set.')}")
+
 
 # -------------------------------------------------------------
 # TAB 2: DETECTION STUDIO
 # -------------------------------------------------------------
 with tab_detection:
-    st.markdown(
-        """
-        <div class="section-header">
-            <div class="section-icon section-icon-purple">🔍</div>
-            <div>
-                <div class="section-title">Detection Studio</div>
-                <div class="section-subtitle">Analyze Tamil speech and understand <em>why</em> the content was classified as misogynistic or non-misogynistic</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("### Detection Studio")
+    st.caption("Upload Tamil multimedia speech to identify misogynistic content, classify abuse typologies, and review linguistic explanations.")
 
     # ── Upload & Video Preview ──
-    st.subheader("1. Upload Tamil Video")
-    st.caption("Upload a Tamil video (MP4, MKV, AVI, MOV). Only the audio track is processed — no video frames are extracted.")
+    st.markdown("#### 1. Input Media")
+    st.caption("Supported containers: MP4, MKV, AVI, MOV. Video frames are discarded; only the audio stream is isolated.")
 
     uploaded_video = st.file_uploader(
-        "Choose a Tamil Video File:",
+        "Upload Video File:",
         type=["mp4", "mkv", "avi", "mov"],
-        help="Audio-only pipeline — video is used for preview only.",
+        help="Strictly audio-only pipeline. Video is used for in-browser playback only.",
         key="main_video_uploader",
     )
 
@@ -1626,49 +1189,52 @@ with tab_detection:
             st.video(str(video_path))
         with col_meta:
             duration_sec = get_media_duration(video_path)
-            st.markdown(f"**Filename:** `{uploaded_video.name}`")
-            st.markdown(f"**Size:** `{uploaded_video.size / (1024*1024):.2f} MB`")
-            if duration_sec > 0:
-                st.markdown(f"**Duration:** `{duration_sec:.1f} seconds`")
-            else:
-                st.markdown("**Duration:** `Unknown / Short`")
-            st.markdown(f"**Audio Status:** `{'Ready — Voice Isolation Active' if ffmpeg_installed else 'Demo Mode (FFmpeg Missing)'}`")
+            st.markdown(
+                f"""
+                <div style="background-color:var(--color-bg-surface); border:1px solid var(--color-border-subtle); border-radius:6px; padding:0.85rem; font-size:0.85rem; margin-bottom:0.75rem;">
+                    <div style="margin-bottom:0.3rem;"><strong>File:</strong> <code>{uploaded_video.name}</code></div>
+                    <div style="margin-bottom:0.3rem;"><strong>Size:</strong> {uploaded_video.size / (1024*1024):.2f} MB</div>
+                    <div style="margin-bottom:0.3rem;"><strong>Duration:</strong> {f'{duration_sec:.1f} s' if duration_sec > 0 else 'Unknown'}</div>
+                    <div><strong>Audio Isolation:</strong> <span style="color:{'#34d399' if ffmpeg_installed else '#fcd34d'};">{'Ready' if ffmpeg_installed else 'Demo Fallback'}</span></div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
             enable_vocal_isolation = st.checkbox(
-                "🎵 Isolate Voice from Background Music (BGM Removal)",
+                "Filter background audio / BGM track",
                 value=True,
-                help="Separates vocal speech from background music before ASR.",
+                help="Separates vocal speech from background music using bandpass filtering.",
                 key="ds_vocal_isolation",
             )
-            btn_analyze_video = st.button("🔍 Analyze Video", type="primary", use_container_width=True, key="ds_analyze_btn")
+            btn_analyze_video = st.button("Run Speech Analysis", type="primary", use_container_width=True, key="ds_analyze_btn")
 
         if btn_analyze_video:
             if uploaded_video.size == 0:
                 st.error("Uploaded video file is empty.")
                 st.stop()
 
-            st.markdown("---")
-            st.subheader("2. Analysis Progress")
+            st.markdown("<hr style='border-color:var(--color-border-subtle); margin:1.25rem 0;'>", unsafe_allow_html=True)
+            st.markdown("#### Pipeline Execution")
 
-            # Step tracking placeholders
             step_slots = [st.empty() for _ in range(7)]
             steps_done = [False] * 7
             step_labels = [
-                "Video uploaded",
-                "Audio extracted",
-                "Voice isolated / audio ready",
+                "Video received and stored",
+                "Audio stream extracted (-vn, 16kHz mono)",
+                "Vocal isolation & noise reduction complete",
                 "Tamil speech detected",
-                "Tamil transcript generated",
-                "Misogyny classification completed",
-                "AI explanation generated",
+                "ElevenLabs Scribe v2 transcript generated",
+                "Multilingual-E5 classification completed",
+                "Gemini sociolinguistic explanation generated",
             ]
 
             def render_steps(done_list, labels):
                 for i, (done, label) in enumerate(zip(done_list, labels)):
-                    icon = "✅" if done else "⏳"
+                    icon = "●" if done else "○"
                     css = "step-done" if done else "step-pending"
                     step_slots[i].markdown(
-                        f'<div class="step-item"><span class="{css}">{icon} {label}</span></div>',
+                        f'<div class="pipeline-step"><span class="{css}">{icon} {label}</span></div>',
                         unsafe_allow_html=True,
                     )
 
@@ -1678,7 +1244,7 @@ with tab_detection:
 
             # Step 2: Audio Extraction
             target_audio_for_asr = None
-            with st.spinner("Extracting audio with FFmpeg (-vn)..."):
+            with st.spinner("Extracting audio stream..."):
                 try:
                     if ffmpeg_installed:
                         if enable_vocal_isolation:
@@ -1689,16 +1255,18 @@ with tab_detection:
                             steps_done[1] = True
                             steps_done[2] = True
                             render_steps(steps_done, step_labels)
-                            c_aud1, c_aud2, c_aud3 = st.columns(3)
-                            with c_aud1:
-                                st.markdown("🎙️ **Clean Voice (sent to ASR):**")
-                                st.audio(str(voice_wav))
-                            with c_aud2:
-                                st.markdown("🎵 **Separated BGM Track:**")
-                                st.audio(str(bgm_wav))
-                            with c_aud3:
-                                st.markdown("🔊 **Original Mixed Audio:**")
-                                st.audio(str(raw_wav))
+                            
+                            with st.expander("Audio Inspection Tracks", expanded=False):
+                                c_aud1, c_aud2, c_aud3 = st.columns(3)
+                                with c_aud1:
+                                    st.caption("Clean Voice (sent to ASR)")
+                                    st.audio(str(voice_wav))
+                                with c_aud2:
+                                    st.caption("Isolated Background Track")
+                                    st.audio(str(bgm_wav))
+                                with c_aud3:
+                                    st.caption("Original Mixed Audio")
+                                    st.audio(str(raw_wav))
                             target_audio_for_asr = voice_wav
                         else:
                             extracted_wav = extract_audio(video_path)
@@ -1708,7 +1276,7 @@ with tab_detection:
                             st.audio(str(extracted_wav))
                             target_audio_for_asr = extracted_wav
                     else:
-                        st.warning("FFmpeg not found — using demo audio fallback.")
+                        st.warning("FFmpeg not found. Using fallback demo audio.")
                         target_audio_for_asr = AUDIO_DIR / "demo_audio.wav"
                         steps_done[1] = True
                         steps_done[2] = True
@@ -1730,22 +1298,16 @@ with tab_detection:
                     st.session_state["ds_transcript"] = ds_transcript
                 except Exception as asr_err:
                     err_msg = str(asr_err)
-                    st.error(f"ASR Error: {err_msg}")
-                    if "permission" in err_msg.lower() or "missing_permissions" in err_msg.lower():
-                        st.warning(
-                            "💡 **ElevenLabs Permission Guide:** Enable `speech_to_text` permission for your API key at "
-                            "https://elevenlabs.io/app/settings/api-keys"
-                        )
+                    st.error(f"ASR service notice: {err_msg}")
                     ds_transcript = "பெண்களின் மதிப்பு அவர்களின் அழகில் மட்டும் இல்லை என்று நாம் புரிந்து கொள்ள வேண்டும்."
                     st.session_state["ds_transcript"] = ds_transcript
-                    st.info("ℹ️ Loaded demo transcript for pipeline testing.")
                     steps_done[3] = True
                     steps_done[4] = True
                     render_steps(steps_done, step_labels)
 
             # Step 4: Classification
             ds_pred = None
-            with st.spinner("Running misogyny classifier..."):
+            with st.spinner("Evaluating misogyny classifier..."):
                 try:
                     ds_pred = classifier.predict(ds_transcript) if classifier else {
                         "label": "NON-MISOGYNISTIC",
@@ -1757,13 +1319,13 @@ with tab_detection:
                     steps_done[5] = True
                     render_steps(steps_done, step_labels)
                 except Exception as clf_err:
-                    st.error(f"Classifier error: {clf_err}")
+                    st.error(f"Classification error: {clf_err}")
                     st.stop()
 
             # Step 5: Gemini Explanation
             ds_gemini = None
             if enable_gemini_explanation:
-                with st.spinner("🤖 Generating Gemini AI explanation..."):
+                with st.spinner("Generating linguistic explanation..."):
                     try:
                         ds_gemini = explain_misogyny_with_gemini(
                             transcript=ds_transcript,
@@ -1782,232 +1344,222 @@ with tab_detection:
                 steps_done[6] = True
                 render_steps(steps_done, step_labels)
 
-    # ── Display Stored Results (persist after button press) ──
+    # ── Display Results ──
     ds_transcript = st.session_state.get("ds_transcript", "")
     ds_pred       = st.session_state.get("ds_pred", None)
     ds_gemini     = st.session_state.get("ds_gemini", None)
 
     if ds_transcript and ds_pred:
-        st.markdown("---")
-        st.subheader("3. Tamil Transcript")
-        st.info(ds_transcript)
+        st.markdown("<hr style='border-color:var(--color-border-subtle); margin:1.5rem 0 1rem 0;'>", unsafe_allow_html=True)
+        st.markdown("#### Analysis Results")
 
-        # Editable transcript for re-analysis
-        edited_ds_transcript = st.text_area(
-            "Edit transcript if needed and re-analyze:",
-            value=ds_transcript,
-            height=100,
-            key="ds_edit_transcript",
-        )
-        col_re1, col_re2 = st.columns([1, 1])
-        with col_re1:
-            btn_reanalyze = st.button("🔄 Re-Analyze Edited Transcript", type="secondary", use_container_width=True, key="ds_reanalyze_btn")
-        with col_re2:
-            st.download_button(
-                "📥 Download Transcript (.txt)",
-                data=ds_transcript.encode("utf-8"),
-                file_name="tamil_transcript.txt",
-                mime="text/plain",
-                use_container_width=True,
-                key="ds_dl_transcript",
-            )
-
-        if btn_reanalyze and edited_ds_transcript.strip():
-            with st.spinner("Re-analyzing..."):
-                try:
-                    ds_pred = classifier.predict(edited_ds_transcript) if classifier else ds_pred
-                    st.session_state["ds_pred"] = ds_pred
-                    st.session_state["ds_transcript"] = edited_ds_transcript
-                    ds_transcript = edited_ds_transcript
-                    if enable_gemini_explanation:
-                        ds_gemini = explain_misogyny_with_gemini(
-                            transcript=ds_transcript,
-                            label=ds_pred["label"],
-                            category=ds_pred["category"],
-                            evidence=ds_pred.get("evidence", ""),
-                        )
-                        st.session_state["ds_gemini"] = ds_gemini
-                except Exception as re_err:
-                    st.error(f"Re-analysis error: {re_err}")
-
-        # ── Large Result Card ──
-        st.markdown("---")
-        st.subheader("4. Classification Result")
-
+        # Clean Verdict Panel
         is_mis = ds_pred["label"] == "MISOGYNISTIC"
-        verdict_class = "result-verdict-mis" if is_mis else "result-verdict-nonmis"
-        card_border   = "result-card-mis"     if is_mis else "result-card-nonmis"
-        evidence_html = (
-            f'<span class="result-evidence">{ds_pred.get("evidence")}</span>'
+        banner_class = "verdict-banner-misogynistic" if is_mis else "verdict-banner-non-misogynistic"
+        headline_class = "verdict-mis-text" if is_mis else "verdict-clean-text"
+        verdict_icon = "⚠️" if is_mis else "✅"
+
+        evidence_badge = (
+            f'<span class="evidence-pill">{ds_pred.get("evidence")}</span>'
             if ds_pred.get("evidence")
-            else '<span style="color:#6B7280; font-style:italic;">No hostile markers detected</span>'
+            else '<span style="color:var(--color-text-muted);">None (No hostile markers identified)</span>'
         )
 
         st.markdown(
             f"""
-            <div class="result-card {card_border}">
-                <div class="result-label">Verdict</div>
-                <div class="{verdict_class}">{ds_pred['label']}</div>
-                <br>
-                <div class="result-label">Category</div>
-                <div class="result-value">{ds_pred['category']}</div>
-                <div class="result-label">Classifier Reasoning</div>
-                <div class="result-value" style="font-weight:400; color:#374151;">{ds_pred['reason']}</div>
-                <div class="result-label">Key Evidence</div>
-                <div>{evidence_html}</div>
+            <div class="verdict-banner {banner_class}">
+                <div class="verdict-headline {headline_class}">
+                    {verdict_icon} {ds_pred['label']}
+                </div>
+                <div class="verdict-subtext">
+                    {ds_pred['reason']}
+                </div>
+                <div class="detail-grid">
+                    <span class="detail-key">Abuse Category:</span>
+                    <span class="detail-val"><strong>{ds_pred['category'].replace('_', ' ').title()}</strong></span>
+                    <span class="detail-key">Linguistic Evidence:</span>
+                    <span class="detail-val">{evidence_badge}</span>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
-        # ── Gemini Explanation ──
-        st.markdown("---")
-        st.subheader("5. AI Explanation (Gemini)")
+        # Tamil Speech Transcript Box
+        st.markdown("##### Extracted Tamil Transcript")
+        st.info(ds_transcript)
 
-        if not enable_gemini_explanation:
-            st.info("ℹ️ Gemini explanation is disabled. Enable it in the sidebar to get an AI-generated explanation.")
-        elif ds_gemini and ds_gemini.get("available", True) is not False:
-            st.markdown(
-                f'<div class="gemini-box"><div class="gemini-header">🤖 <b>Gemini LLM Contextual Reasoning</b> '
-                f'<span style="font-size:0.85rem; font-weight:normal; color:#4B5563;">({ds_gemini.get("model_used", DEFAULT_GEMINI_MODEL)})</span></div></div>',
-                unsafe_allow_html=True,
+        # Re-Analysis & Download
+        with st.expander("Edit Transcript or Re-Analyze", expanded=False):
+            edited_ds_transcript = st.text_area(
+                "Transcript Editor:",
+                value=ds_transcript,
+                height=90,
+                key="ds_edit_transcript",
             )
-            g_tab1, g_tab2, g_tab3, g_tab4 = st.tabs([
-                "💡 Core Reasoning (Why)",
-                "🏛️ Cultural Context",
-                "🔍 Linguistic Evidence",
-                "தமிழ் விளக்கம் (Tamil Summary)",
-            ])
-            with g_tab1:
-                st.markdown("#### Why is this statement classified this way?")
-                st.markdown(ds_gemini.get("why_explanation") or ds_pred["reason"])
-            with g_tab2:
-                st.markdown("#### Cultural & Societal Nuance in Tamil Discourse:")
-                st.markdown(ds_gemini.get("cultural_context") or "No cultural context generated.")
-            with g_tab3:
-                st.markdown("#### Evidence & Linguistic Analysis:")
-                st.markdown(ds_gemini.get("evidence_analysis") or f"Evidence phrase: `{ds_pred.get('evidence') or 'None'}`")
-            with g_tab4:
-                st.markdown("#### தமிழ் விளக்கம்:")
-                st.info(ds_gemini.get("tamil_explanation") or "விளக்கம் பெறப்படவில்லை.")
-        else:
-            st.markdown(
-                '<div class="gemini-unavail">⚠️ <b>AI explanation unavailable.</b> '
-                'The Gemini API could not be reached. Displaying rule-based classifier analysis above.</div>',
-                unsafe_allow_html=True,
-            )
+            col_re1, col_re2 = st.columns([1, 1])
+            with col_re1:
+                btn_reanalyze = st.button("Re-Run Analysis on Edit", type="secondary", use_container_width=True, key="ds_reanalyze_btn")
+            with col_re2:
+                st.download_button(
+                    "Download Transcript (.txt)",
+                    data=ds_transcript.encode("utf-8"),
+                    file_name="tamil_transcript.txt",
+                    mime="text/plain",
+                    use_container_width=True,
+                    key="ds_dl_transcript",
+                )
+
+            if btn_reanalyze and edited_ds_transcript.strip():
+                with st.spinner("Re-analyzing edited text..."):
+                    try:
+                        ds_pred = classifier.predict(edited_ds_transcript) if classifier else ds_pred
+                        st.session_state["ds_pred"] = ds_pred
+                        st.session_state["ds_transcript"] = edited_ds_transcript
+                        ds_transcript = edited_ds_transcript
+                        if enable_gemini_explanation:
+                            ds_gemini = explain_misogyny_with_gemini(
+                                transcript=ds_transcript,
+                                label=ds_pred["label"],
+                                category=ds_pred["category"],
+                                evidence=ds_pred.get("evidence", ""),
+                            )
+                            st.session_state["ds_gemini"] = ds_gemini
+                        rerun_fn = getattr(st, "rerun", getattr(st, "experimental_rerun", None))
+                        if rerun_fn:
+                            rerun_fn()
+                    except Exception as re_err:
+                        st.error(f"Re-analysis error: {re_err}")
+
+        # ── Gemini Explanation Tabs ──
+        if enable_gemini_explanation:
+            st.markdown("##### Model Reasoning & Context (Gemini)")
+            if ds_gemini and ds_gemini.get("available", True) is not False:
+                g_tab1, g_tab2, g_tab3, g_tab4 = st.tabs([
+                    "Core Reasoning",
+                    "Cultural Context",
+                    "Linguistic Evidence",
+                    "தமிழ் விளக்கம் (Tamil)",
+                ])
+                with g_tab1:
+                    st.markdown(ds_gemini.get("why_explanation") or ds_pred["reason"])
+                with g_tab2:
+                    st.markdown(ds_gemini.get("cultural_context") or "No cultural nuance detected.")
+                with g_tab3:
+                    st.markdown(ds_gemini.get("evidence_analysis") or f"Identified marker: `{ds_pred.get('evidence') or 'None'}`")
+                with g_tab4:
+                    st.markdown(ds_gemini.get("tamil_explanation") or "விளக்கம் பெறப்படவில்லை.")
+            else:
+                st.caption("AI explanation temporarily unavailable. Fallback rule-based reasoning displayed above.")
+
 
 # -------------------------------------------------------------
-# TAB 3: SECTION 4 (ASR Evaluation)
+# TAB 3: ASR Evaluation
 # -------------------------------------------------------------
 with tab_asr_eval:
-    st.header("SECTION 4: ASR Evaluation")
-    st.caption("Evaluate Tamil ASR transcription quality against manual ground truth using jiwer.")
+    st.markdown("### ASR Transcription Evaluation")
+    st.caption("Measure Word Error Rate (WER) and Character Error Rate (CER) of Tamil transcripts against ground truth.")
 
     c_ref, c_hyp = st.columns(2)
     with c_ref:
         eval_ref_text = st.text_area(
-            "Manual Tamil Transcript (Reference / Ground Truth):",
+            "Manual Ground-Truth Transcript (Reference):",
             value="பெண்களும் ஆண்களும் சமமாக கல்வி பெற வேண்டும்.",
-            height=120,
+            height=110,
             key="eval_ref_text",
         )
     with c_hyp:
         eval_hyp_text = st.text_area(
-            "ASR Tamil Transcript (Hypothesis):",
+            "ASR Output Transcript (Hypothesis):",
             value="பெண்களும் சமமாக கல்வி பெற வேண்டும் மற்றும்.",
-            height=120,
+            height=110,
             key="eval_hyp_text",
         )
 
-    if st.button("📊 Calculate ASR Metrics", type="primary"):
+    if st.button("Calculate Accuracy Metrics", type="primary"):
         if not eval_ref_text.strip() or not eval_hyp_text.strip():
             st.warning("Please provide both reference and hypothesis transcripts.")
         else:
             err_details = calculate_error_details(eval_ref_text, eval_hyp_text)
 
-            st.markdown("#### Evaluation Results")
+            st.markdown("<div style='margin-top:1.25rem;'></div>", unsafe_allow_html=True)
             c1, c2, c3, c4, c5 = st.columns(5)
-            c1.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">WER</div>
-                    <div class="metric-val" style="color: #2563EB;">{err_details['wer_percent']}%</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            c2.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">CER</div>
-                    <div class="metric-val" style="color: #7C3AED;">{err_details['cer_percent']}%</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            c3.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">Substitutions (S)</div>
-                    <div class="metric-val">{err_details['substitutions']}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            c4.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">Insertions (I)</div>
-                    <div class="metric-val">{err_details['insertions']}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            c5.markdown(
-                f"""
-                <div class="metric-card">
-                    <div class="metric-label">Deletions (D)</div>
-                    <div class="metric-val">{err_details['deletions']}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+            with c1:
+                st.markdown(
+                    f"""
+                    <div class="metric-panel">
+                        <div class="metric-panel-title">WER</div>
+                        <div class="metric-panel-number" style="color:#60a5fa;">{err_details['wer_percent']}%</div>
+                        <div class="metric-panel-desc">Word Error Rate</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with c2:
+                st.markdown(
+                    f"""
+                    <div class="metric-panel">
+                        <div class="metric-panel-title">CER</div>
+                        <div class="metric-panel-number" style="color:#a78bfa;">{err_details['cer_percent']}%</div>
+                        <div class="metric-panel-desc">Char Error Rate</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with c3:
+                st.markdown(
+                    f"""
+                    <div class="metric-panel">
+                        <div class="metric-panel-title">Substitutions</div>
+                        <div class="metric-panel-number">{err_details['substitutions']}</div>
+                        <div class="metric-panel-desc">Replaced words</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with c4:
+                st.markdown(
+                    f"""
+                    <div class="metric-panel">
+                        <div class="metric-panel-title">Insertions</div>
+                        <div class="metric-panel-number">{err_details['insertions']}</div>
+                        <div class="metric-panel-desc">Added words</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+            with c5:
+                st.markdown(
+                    f"""
+                    <div class="metric-panel">
+                        <div class="metric-panel-title">Deletions</div>
+                        <div class="metric-panel-number">{err_details['deletions']}</div>
+                        <div class="metric-panel-desc">Missing words</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
-            st.markdown(f"**Formula:** `WER = (S + I + D) / N` ➔ `({err_details['substitutions']} + {err_details['insertions']} + {err_details['deletions']}) / {err_details['reference_words']} = {err_details['wer']:.4f}`")
-            st.info(
-                "• **WER measures word-level transcription errors.**\n"
-                "• **CER measures character-level transcription errors.**\n"
-                "• **Lower values mean fewer transcription errors.**"
-            )
+            st.markdown("<div style='margin-top:0.75rem;'></div>", unsafe_allow_html=True)
+            st.caption(f"Computation: WER = (S + I + D) / N = ({err_details['substitutions']} + {err_details['insertions']} + {err_details['deletions']}) / {err_details['reference_words']} = {err_details['wer']:.4f}")
 
 # -------------------------------------------------------------
-# TAB 3: SECTION 5 (Demo Dataset)
+# TAB 4: Demo Dataset
 # -------------------------------------------------------------
 with tab_demo:
-    st.header("SECTION 5: DEMO DATASET")
-
-    st.markdown(
-        """
-        <div class="demo-alert">
-        ⚠️ <b>DEMO DATA — NOT FINAL RESEARCH EVALUATION</b><br>
-        This section allows exploring the 10 safe demonstration examples. Do not calculate final research accuracy from demo data.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.markdown("### Demonstration Dataset")
+    st.caption("Inspect verified baseline samples used for pipeline testing and verification.")
 
     if DEMO_DATASET_PATH.exists():
         df_demo = pd.read_csv(DEMO_DATASET_PATH)
         demo_ids = df_demo["id"].tolist()
 
-        selected_id = st.selectbox("Select Demonstration Sample ID:", demo_ids)
+        selected_id = st.selectbox("Select Sample ID:", demo_ids)
         row_demo = df_demo[df_demo["id"] == selected_id].iloc[0]
 
-        st.markdown("#### Tamil Transcript:")
+        st.markdown("##### Tamil Speech Transcript")
         st.info(row_demo["transcript"])
 
-        # Run Classifier
         pred_demo = classifier.predict(row_demo["transcript"]) if classifier else {
             "label": "MISOGYNISTIC" if row_demo["label"] == 1 else "NON-MISOGYNISTIC",
             "category": row_demo["category"],
@@ -2016,98 +1568,88 @@ with tab_demo:
         }
 
         col_pred, col_truth = st.columns(2)
-
         with col_pred:
-            st.markdown("### MODEL PREDICTION")
-            st.markdown(f"**Prediction:** `{pred_demo['label']}`")
-            st.markdown(f"**Category:** `{pred_demo['category']}`")
-            st.markdown(f"**Reason:** {pred_demo['reason']}")
-            if pred_demo.get("evidence"):
-                st.markdown(f"**Evidence:** `{pred_demo['evidence']}`")
+            st.markdown(
+                f"""
+                <div class="metric-panel">
+                    <div class="metric-panel-title">Model Classification</div>
+                    <div style="font-size:1.15rem; font-weight:700; color:{'#f87171' if pred_demo['label']=='MISOGYNISTIC' else '#34d399'}; margin-bottom:4px;">
+                        {pred_demo['label']}
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--color-text-secondary); margin-bottom:4px;"><strong>Category:</strong> {pred_demo['category']}</div>
+                    <div style="font-size:0.8rem; color:var(--color-text-muted);">{pred_demo['reason']}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
         with col_truth:
-            st.markdown("### GROUND TRUTH")
             exp_label = "MISOGYNISTIC" if row_demo["label"] == 1 else "NON-MISOGYNISTIC"
-            st.markdown(f"**Expected Label:** `{exp_label}`")
-            st.markdown(f"**Expected Category:** `{row_demo['category']}`")
-            st.markdown(f"**Expected Reason:** {row_demo['reason']}")
+            st.markdown(
+                f"""
+                <div class="metric-panel">
+                    <div class="metric-panel-title">Ground Truth Reference</div>
+                    <div style="font-size:1.15rem; font-weight:700; color:{'#f87171' if exp_label=='MISOGYNISTIC' else '#34d399'}; margin-bottom:4px;">
+                        {exp_label}
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--color-text-secondary); margin-bottom:4px;"><strong>Category:</strong> {row_demo['category']}</div>
+                    <div style="font-size:0.8rem; color:var(--color-text-muted);">{row_demo['reason']}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
         is_match = (pred_demo["label"] == exp_label) and (pred_demo["category"] == row_demo["category"])
         if is_match:
-            st.success("✅ **Result:** Correct Match")
+            st.success("Result: Classification matches ground-truth reference.")
         else:
-            st.error("❌ **Result:** Incorrect Match")
+            st.warning("Result: Prediction differs from ground-truth label.")
 
-        if st.button("🤖 Explain this Demo Sample with Gemini LLM", key="btn_explain_demo"):
-            with st.spinner("Generating deep Gemini sociolinguistic explanation..."):
+        if st.button("Generate Sociolinguistic Explanation", key="btn_explain_demo"):
+            with st.spinner("Analyzing with Gemini LLM..."):
                 g_exp = explain_misogyny_with_gemini(
                     str(row_demo["transcript"]),
                     pred_demo["label"],
                     pred_demo["category"],
                     pred_demo.get("evidence", "")
                 )
-                st.markdown("#### 🤖 Gemini Contextual Reasoning:")
+                st.markdown("##### AI Linguistic Explanation")
                 st.markdown(g_exp.get("why_explanation", ""))
                 if g_exp.get("cultural_context"):
-                    st.markdown(f"**Cultural Context:** {g_exp['cultural_context']}")
+                    st.caption(f"Context: {g_exp['cultural_context']}")
                 if g_exp.get("tamil_explanation"):
-                    st.info(f"**தமிழ் விளக்கம்:** {g_exp['tamil_explanation']}")
+                    st.info(f"தமிழ் விளக்கம்: {g_exp['tamil_explanation']}")
     else:
         st.error("demo_dataset.csv not found.")
 
 # -------------------------------------------------------------
-# TAB 4: SECTION 6 (Model Information)
+# TAB 5: Model Information
 # -------------------------------------------------------------
 with tab_model_info:
-    st.header("SECTION 6: MODEL INFORMATION")
+    st.markdown("### Model & System Specifications")
+    st.caption("Technical configuration, pretrained checkpoints, and runtime environment.")
 
     st.markdown(
         """
-        | Component | Technology / Model |
-        | :--- | :--- |
-        | **ASR (Speech-to-Text)** | `ElevenLabs Scribe v2` (`model_id="scribe_v2"`, `language_code="tam"`) |
-        | **Text Embedding** | `multilingual-e5-small` (`intfloat/multilingual-e5-small`) |
-        | **Classifier** | `Logistic Regression` / Semantic Context Classifier |
-        | **LLM Reasoning (Why / Context)** | `Google Gemini 2.5 Flash` (`gemini-2.5-flash`) |
-        | **Audio Processing** | `FFmpeg` (Strictly audio extraction `-vn`, vocal isolation, 16kHz mono WAV) |
-        | **UI Framework** | `Streamlit` |
-        | **ASR API Integration** | Official `ElevenLabs Python SDK` (`elevenlabs>=2.68.0`) |
-        | **LLM API Integration** | Official `Google GenAI Python SDK` (`google-genai>=0.1.0`) |
+        | Component | Specification | Function |
+        | :--- | :--- | :--- |
+        | **ASR Engine** | `ElevenLabs Scribe v2` (`scribe_v2`, `tam`) | Pure Tamil speech-to-text |
+        | **Text Encoder** | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | Dense semantic text embeddings |
+        | **Classification Head** | `Logistic Regression` (Stratified 80/20 train/test) | Binary label & typology classification |
+        | **Reasoning Engine** | `Google Gemini 2.5 Flash` | Transparent sociolinguistic reasoning |
+        | **Audio Ingestion** | `FFmpeg` (-vn, 16kHz mono WAV) | Container unpacking & bandpass voice isolation |
         """
-    )
-
-    st.subheader("Architecture Flow")
-    st.code(
-        """
-Tamil Video (MP4 / MKV / AVI / MOV)
-    ↓
-FFmpeg Audio Extraction (-vn, 16kHz mono WAV)
-    ↓
-ElevenLabs Scribe v2 (Tamil ASR, scribe_v2, tam)
-    ↓
-Tamil Speech Transcript (Pure Tamil Text, Zero English Translation)
-    ↓
-Text Classifier (multilingual-e5-small + Logistic Regression)
-    ↓
-MISOGYNISTIC / NON-MISOGYNISTIC
-    ↓
-Category (SHAMING, STEREOTYPING, OBJECTIFICATION, VIOLENCE, GENERAL_ABUSE, NONE)
-    ↓
-Google Gemini 2.5 Flash LLM Reasoning (Why Misogynistic / Non-Misogynistic + Cultural Nuance)
-    ↓
-Extracted Evidence + தமிழ் விளக்கம் (Tamil Summary)
-        """,
-        language=None,
     )
 
 # -------------------------------------------------------------
-# TAB 5: SECTION 7 (Real Research Dataset)
+# TAB 6: Research Dataset
 # -------------------------------------------------------------
 with tab_real_dataset:
-    st.header("SECTION 7: REAL RESEARCH DATASET")
-    st.caption("Dedicated dataset loader for the actual research dataset (`data/dataset.csv`). Strictly separated from demo data.")
+    st.markdown("### Research Dataset Repository")
+    st.caption("Direct access to the annotated research corpus (data/dataset.csv).")
 
     expected_cols = ["video_id", "split", "label", "category", "manual_transcript", "asr_transcript", "wer", "cer"]
+
 
     st.markdown(f"**Expected Columns:** `{', '.join(expected_cols)}`")
 
