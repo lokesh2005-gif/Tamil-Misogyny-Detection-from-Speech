@@ -1554,8 +1554,21 @@ with tab_detection:
 
         # ── Gemini Explanation Tabs ──
         if enable_gemini_explanation:
-            st.markdown("##### Model Reasoning & Context (Gemini)")
-            if ds_gemini and ds_gemini.get("available", True) is not False:
+            is_live = bool(ds_gemini and ds_gemini.get("available") is True)
+            badge_color = "#34d399" if is_live else "#fbbf24"
+            badge_text = "Gemini 2.5 Flash" if is_live else "Rule-Based Baseline"
+
+            st.markdown(
+                f"""
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.75rem; margin-bottom:0.5rem;">
+                    <h5 style="margin:0; font-size:1.05rem;">Model Reasoning & Context</h5>
+                    <span style="font-size:0.72rem; font-weight:600; background:rgba(255,255,255,0.06); border:1px solid {badge_color}; color:{badge_color}; border-radius:12px; padding:0.15rem 0.6rem;">{badge_text}</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            if ds_gemini:
                 g_tab1, g_tab2, g_tab3, g_tab4 = st.tabs([
                     "Core Reasoning",
                     "Cultural Context",
@@ -1563,13 +1576,16 @@ with tab_detection:
                     "தமிழ் விளக்கம் (Tamil)",
                 ])
                 with g_tab1:
-                    st.markdown(ds_gemini.get("why_explanation") or ds_pred["reason"])
+                    st.markdown(ds_gemini.get("why_explanation") or ds_pred.get("reason", "No explanation available."))
                 with g_tab2:
                     st.markdown(ds_gemini.get("cultural_context") or "No cultural nuance detected.")
                 with g_tab3:
                     st.markdown(ds_gemini.get("evidence_analysis") or f"Identified marker: `{ds_pred.get('evidence') or 'None'}`")
                 with g_tab4:
                     st.markdown(ds_gemini.get("tamil_explanation") or "விளக்கம் பெறப்படவில்லை.")
+
+                if not is_live:
+                    st.caption("Displaying deterministic sociolinguistic baseline explanation.")
             else:
                 st.caption("AI explanation temporarily unavailable. Fallback rule-based reasoning displayed above.")
 
