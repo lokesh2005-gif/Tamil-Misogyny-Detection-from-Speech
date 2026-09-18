@@ -9,6 +9,7 @@ TAMIL VIDEO -> AUDIO EXTRACTION (-vn) -> TAMIL ASR -> TAMIL TRANSCRIPT -> TEXT C
 import os
 import sys
 import shutil
+import textwrap
 from pathlib import Path
 import pandas as pd
 import streamlit as st
@@ -1709,51 +1710,51 @@ with tab_demo:
         cultural_str = str(row_demo.get("cultural_context", ""))
         tamil_exp_str = str(row_demo.get("tamil_explanation", ""))
 
-        st.markdown(
-            f"""
-            <div style="margin: 1.25rem 0 1rem 0;">
-                <span style="font-weight:700; font-size:1rem; color:var(--color-text-primary); margin-right:8px;">Tamil Transcript:</span>
-                <span style="color:#4ade80; background:rgba(34, 197, 94, 0.1); padding:4px 10px; border-radius:4px; font-family:var(--font-mono); font-size:0.95rem; border:1px solid rgba(34, 197, 94, 0.25);">
-                    {transcript_text}
-                </span>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        # Tamil Transcript Display
+        st.markdown("##### Tamil Transcript")
+        st.info(transcript_text)
+
+        # Verdict Card using the production CSS
+        banner_class = "verdict-banner-misogynistic" if is_mis else "verdict-banner-non-misogynistic"
+        headline_class = "verdict-mis-text" if is_mis else "verdict-clean-text"
+        verdict_icon = "⚠️" if is_mis else "✅"
+
+        evidence_badge = (
+            f'<span class="evidence-pill">{evidence_str}</span>'
+            if is_mis and evidence_str and evidence_str.lower() != "none"
+            else '<span style="color:var(--color-text-muted);">None (Neutral / Non-hostile statement)</span>'
         )
 
-        pred_color = "#f87171" if is_mis else "#34d399"
-
-        st.markdown(
-            f"""
-            <div style="margin-bottom: 1.5rem; line-height: 1.6;">
-                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Prediction</div>
-                <div style="font-size: 1.15rem; font-weight: 700; color: {pred_color}; margin-top: 2px;">{label_str}</div>
-
-                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Category</div>
-                <div style="font-size: 1rem; font-weight: 600; color: var(--color-text-secondary); margin-top: 2px;">{cat_str}</div>
-
-                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Why?</div>
-                <div style="font-size: 0.92rem; color: var(--color-text-primary); margin-top: 2px;">{reason_str}</div>
-
-                <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-text-primary); margin-top: 0.75rem;">Evidence</div>
-                <div style="font-size: 1rem; color: {pred_color if is_mis else 'var(--color-text-muted)'}; margin-top: 2px; font-weight: 600;">
-                    {evidence_str}
-                </div>
+        verdict_card = textwrap.dedent(f"""
+        <div class="verdict-banner {banner_class}" style="margin-top:0.75rem; margin-bottom:1.25rem;">
+            <div class="verdict-headline {headline_class}">
+                {verdict_icon} {label_str}
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+            <div class="verdict-subtext">
+                {reason_str}
+            </div>
+            <div class="detail-grid">
+                <span class="detail-key">Category:</span>
+                <span class="detail-val"><strong>{cat_str.replace('_', ' ').title()}</strong></span>
+                <span class="detail-key">Linguistic Evidence:</span>
+                <span class="detail-val">{evidence_badge}</span>
+            </div>
+        </div>
+        """)
+        st.markdown(verdict_card, unsafe_allow_html=True)
 
-        with st.expander("🤖 View Gemini LLM Contextual Reasoning for Demo Sample", expanded=True):
-            st.markdown(
-                f"""
-                <div style="font-size: 0.92rem; line-height: 1.7; color: var(--color-text-primary);">
-                    <p><strong>Why:</strong> The statement "{transcript_text}" is classified as <strong>{label_str}</strong> under the category of <strong>{cat_str}</strong>. {reason_str}</p>
-                    <p>{f'The critical element here is the phrase "<strong>{evidence_str}</strong>", which directly establishes the misogynistic premise.' if is_mis else 'The statement utilizes gender terms in an egalitarian or purely factual professional context without any derogatory or subordinating implication.'}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
+        with st.expander("🤖 Sociolinguistic & Cultural Context Analysis", expanded=True):
+            exp_text = (
+                f"The statement is classified as **{label_str}** under the category of **{cat_str.replace('_', ' ').title()}**.\n\n"
+                f"{reason_str}\n\n"
             )
+            if is_mis:
+                exp_text += f"The critical element here is the phrase `\"{evidence_str}\"`, which directly establishes the misogynistic premise."
+            else:
+                exp_text += "The statement utilizes gender terms in an egalitarian or purely factual context without any derogatory or subordinating implication."
+
+            st.markdown(exp_text)
+
             if cultural_str:
                 st.markdown(f"**Cultural Context:** {cultural_str}")
             if tamil_exp_str:
