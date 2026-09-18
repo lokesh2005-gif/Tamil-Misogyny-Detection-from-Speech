@@ -12,6 +12,8 @@ import shutil
 from pathlib import Path
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
+
 
 # Force UTF-8 on Windows
 if hasattr(sys.stdout, "reconfigure"):
@@ -75,6 +77,185 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ══════════════════════════════════════════════════════
+# ELEVENLABS CONVERSATIONAL AI FLOATING & DRAGGABLE AGENT
+# ══════════════════════════════════════════════════════
+CONVAI_WIDGET_HTML = """
+<script>
+(function() {
+    try {
+        const targetDoc = (window.parent && window.parent.document) ? window.parent.document : document;
+        const targetWin = (window.parent && window.parent.window) ? window.parent.window : window;
+
+        // Prevent duplicate creation across Streamlit reruns
+        if (targetDoc.getElementById("elevenlabs-convai-wrapper")) {
+            return;
+        }
+
+        // 1. Create floating outer wrapper
+        const wrapper = targetDoc.createElement("div");
+        wrapper.id = "elevenlabs-convai-wrapper";
+        wrapper.style.position = "fixed";
+        wrapper.style.bottom = "24px";
+        wrapper.style.right = "24px";
+        wrapper.style.zIndex = "2147483647";
+        wrapper.style.display = "flex";
+        wrapper.style.flexDirection = "column";
+        wrapper.style.alignItems = "center";
+        wrapper.style.touchAction = "none";
+        wrapper.style.userSelect = "none";
+
+        // Restore previously dragged position if saved
+        try {
+            const savedPos = targetWin.sessionStorage.getItem("elevenlabs_convai_pos");
+            if (savedPos) {
+                const pos = JSON.parse(savedPos);
+                wrapper.style.bottom = "auto";
+                wrapper.style.right = "auto";
+                wrapper.style.left = pos.left + "px";
+                wrapper.style.top = pos.top + "px";
+            }
+        } catch(e) {}
+
+        // 2. Modern Drag Handle Pill
+        const handle = targetDoc.createElement("div");
+        handle.id = "convai-drag-handle";
+        handle.innerHTML = `
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.85; margin-right:4px;">
+                <circle cx="8" cy="6" r="2.2"></circle>
+                <circle cx="16" cy="6" r="2.2"></circle>
+                <circle cx="8" cy="12" r="2.2"></circle>
+                <circle cx="16" cy="12" r="2.2"></circle>
+                <circle cx="8" cy="18" r="2.2"></circle>
+                <circle cx="16" cy="18" r="2.2"></circle>
+            </svg>
+            <span>Agent (Drag)</span>
+        `;
+        handle.style.display = "inline-flex";
+        handle.style.alignItems = "center";
+        handle.style.justifyContent = "center";
+        handle.style.padding = "4px 11px";
+        handle.style.marginBottom = "6px";
+        handle.style.borderRadius = "9999px";
+        handle.style.background = "rgba(19, 27, 46, 0.95)";
+        handle.style.color = "#93c5fd";
+        handle.style.border = "1px solid rgba(59, 130, 246, 0.5)";
+        handle.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.5)";
+        handle.style.cursor = "grab";
+        handle.style.fontSize = "11px";
+        handle.style.fontWeight = "600";
+        handle.style.letterSpacing = "0.03em";
+        handle.style.fontFamily = "system-ui, -apple-system, sans-serif";
+        handle.style.backdropFilter = "blur(8px)";
+        handle.style.transition = "background 0.15s, border-color 0.15s, color 0.15s";
+        handle.title = "Click & drag to move this AI voice agent anywhere on your screen";
+
+        // 3. ElevenLabs ConvAI Element
+        const convaiTag = targetDoc.createElement("elevenlabs-convai");
+        convaiTag.setAttribute("agent-id", "agent_3501m2ttkmc7fvqbz9z6wtn9t3m1");
+
+        // 4. Assemble into DOM
+        wrapper.appendChild(handle);
+        wrapper.appendChild(convaiTag);
+        targetDoc.body.appendChild(wrapper);
+
+        // 5. Load external script if not loaded
+        if (!targetDoc.getElementById("elevenlabs-convai-embed-script")) {
+            const script = targetDoc.createElement("script");
+            script.id = "elevenlabs-convai-embed-script";
+            script.src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
+            script.async = true;
+            script.type = "text/javascript";
+            targetDoc.head.appendChild(script);
+        }
+
+        // 6. Smooth Mouse and Touch Dragging
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let initialLeft = 0, initialTop = 0;
+
+        function startDrag(e) {
+            isDragging = true;
+            handle.style.cursor = "grabbing";
+            handle.style.borderColor = "#60a5fa";
+            handle.style.color = "#ffffff";
+
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+            startX = clientX;
+            startY = clientY;
+
+            const rect = wrapper.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+
+            wrapper.style.bottom = "auto";
+            wrapper.style.right = "auto";
+            wrapper.style.left = initialLeft + "px";
+            wrapper.style.top = initialTop + "px";
+
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function moveDrag(e) {
+            if (!isDragging) return;
+
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+
+            let newLeft = initialLeft + dx;
+            let newTop = initialTop + dy;
+
+            const maxLeft = Math.max(0, targetWin.innerWidth - wrapper.offsetWidth - 12);
+            const maxTop = Math.max(0, targetWin.innerHeight - wrapper.offsetHeight - 12);
+
+            newLeft = Math.max(12, Math.min(newLeft, maxLeft));
+            newTop = Math.max(12, Math.min(newTop, maxTop));
+
+            wrapper.style.left = newLeft + "px";
+            wrapper.style.top = newTop + "px";
+
+            if (e.cancelable) e.preventDefault();
+        }
+
+        function endDrag() {
+            if (isDragging) {
+                isDragging = false;
+                handle.style.cursor = "grab";
+                handle.style.borderColor = "rgba(59, 130, 246, 0.5)";
+                handle.style.color = "#93c5fd";
+
+                try {
+                    const rect = wrapper.getBoundingClientRect();
+                    targetWin.sessionStorage.setItem(
+                        "elevenlabs_convai_pos",
+                        JSON.stringify({ left: rect.left, top: rect.top })
+                    );
+                } catch(e) {}
+            }
+        }
+
+        handle.addEventListener("mousedown", startDrag);
+        handle.addEventListener("touchstart", startDrag, { passive: false });
+
+        targetDoc.addEventListener("mousemove", moveDrag);
+        targetDoc.addEventListener("touchmove", moveDrag, { passive: false });
+
+        targetDoc.addEventListener("mouseup", endDrag);
+        targetDoc.addEventListener("touchend", endDrag);
+
+    } catch(err) {
+        console.warn("ElevenLabs ConvAI integration notice:", err);
+    }
+})();
+</script>
+"""
+components.html(CONVAI_WIDGET_HTML, height=0, width=0)
 
 # Custom CSS
 st.markdown(
