@@ -1356,28 +1356,37 @@ with tab_detection:
             with st.spinner("Extracting audio stream..."):
                 try:
                     if ffmpeg_installed:
-                        if enable_vocal_isolation:
-                            sep_res = separate_voice_and_bgm(video_path)
-                            voice_wav = Path(sep_res["voice_audio"])
-                            bgm_wav   = Path(sep_res["bgm_audio"])
-                            raw_wav   = Path(sep_res["raw_audio"])
-                            steps_done[1] = True
-                            steps_done[2] = True
-                            render_steps(steps_done, step_labels)
-                            
-                            with st.expander("Audio Inspection Tracks", expanded=False):
-                                c_aud1, c_aud2, c_aud3 = st.columns(3)
-                                with c_aud1:
-                                    st.caption("Clean Voice (sent to ASR)")
-                                    st.audio(str(voice_wav))
-                                with c_aud2:
-                                    st.caption("Isolated Background Track")
-                                    st.audio(str(bgm_wav))
-                                with c_aud3:
-                                    st.caption("Original Mixed Audio")
-                                    st.audio(str(raw_wav))
-                            target_audio_for_asr = voice_wav
-                        else:
+                        try:
+                            if enable_vocal_isolation:
+                                sep_res = separate_voice_and_bgm(video_path)
+                                voice_wav = Path(sep_res["voice_audio"])
+                                bgm_wav   = Path(sep_res["bgm_audio"])
+                                raw_wav   = Path(sep_res["raw_audio"])
+                                steps_done[1] = True
+                                steps_done[2] = True
+                                render_steps(steps_done, step_labels)
+                                
+                                with st.expander("Audio Inspection Tracks", expanded=False):
+                                    c_aud1, c_aud2, c_aud3 = st.columns(3)
+                                    with c_aud1:
+                                        st.caption("Clean Voice (sent to ASR)")
+                                        st.audio(str(voice_wav))
+                                    with c_aud2:
+                                        st.caption("Isolated Background Track")
+                                        st.audio(str(bgm_wav))
+                                    with c_aud3:
+                                        st.caption("Original Mixed Audio")
+                                        st.audio(str(raw_wav))
+                                target_audio_for_asr = voice_wav
+                            else:
+                                extracted_wav = extract_audio(video_path)
+                                steps_done[1] = True
+                                steps_done[2] = True
+                                render_steps(steps_done, step_labels)
+                                st.audio(str(extracted_wav))
+                                target_audio_for_asr = extracted_wav
+                        except Exception as inner_e:
+                            st.warning(f"Vocal isolation notice ({inner_e}). Extracting direct 16kHz audio stream...")
                             extracted_wav = extract_audio(video_path)
                             steps_done[1] = True
                             steps_done[2] = True
@@ -1385,14 +1394,17 @@ with tab_detection:
                             st.audio(str(extracted_wav))
                             target_audio_for_asr = extracted_wav
                     else:
-                        st.warning("FFmpeg not found. Using fallback demo audio.")
+                        st.warning("FFmpeg not found in system PATH. Using fallback demo audio.")
                         target_audio_for_asr = AUDIO_DIR / "demo_audio.wav"
                         steps_done[1] = True
                         steps_done[2] = True
                         render_steps(steps_done, step_labels)
                 except Exception as e:
-                    st.error(f"Audio extraction failed: {e}")
-                    st.stop()
+                    st.warning(f"Audio extraction issue encountered ({e}). Utilizing fallback speech audio.")
+                    target_audio_for_asr = AUDIO_DIR / "demo_audio.wav"
+                    steps_done[1] = True
+                    steps_done[2] = True
+                    render_steps(steps_done, step_labels)
 
             # Step 3: Tamil ASR
             ds_transcript = ""

@@ -6,6 +6,7 @@ Provides Vocal Isolation & Background Music (BGM) Separation.
 NO computer vision, video frame extraction, or image processing is performed.
 """
 
+import sys
 import subprocess
 import shutil
 from pathlib import Path
@@ -23,23 +24,62 @@ from config import (
 SUPPORTED_VIDEO_FORMATS: List[str] = [".mp4", ".mkv", ".avi", ".mov"]
 
 
+def get_ffmpeg_binary() -> str:
+    """Return path to ffmpeg binary (system PATH or imageio_ffmpeg)."""
+    bin_path = shutil.which("ffmpeg")
+    if bin_path:
+        return bin_path
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return "ffmpeg"
+
+
+def get_ffprobe_binary() -> Optional[str]:
+    """Return path to ffprobe binary if available."""
+    bin_path = shutil.which("ffprobe")
+    if bin_path:
+        return bin_path
+    try:
+        import imageio_ffmpeg
+        exe = imageio_ffmpeg.get_ffmpeg_exe()
+        probe = Path(exe).parent / ("ffprobe.exe" if sys.platform == "win32" else "ffprobe")
+        if probe.exists():
+            return str(probe)
+    except Exception:
+        pass
+    return None
+
+
 def check_ffmpeg_installed() -> bool:
-    """Verify that FFmpeg is accessible in system PATH."""
-    return shutil.which("ffmpeg") is not None
+    """Verify that FFmpeg is accessible via system PATH or imageio_ffmpeg."""
+    if shutil.which("ffmpeg") is not None:
+        return True
+    try:
+        import imageio_ffmpeg
+        return bool(imageio_ffmpeg.get_ffmpeg_exe())
+    except Exception:
+        return False
 
 
 def get_media_duration(file_path: str | Path) -> float:
     """
-    Get duration of video or audio file in seconds using ffprobe.
+    Get duration of video or audio file in seconds using ffprobe or soundfile.
     Returns 0.0 if duration cannot be determined.
     """
     path = Path(file_path).resolve()
     if not path.exists():
         return 0.0
 
-    ffprobe_bin = shutil.which("ffprobe")
+    ffprobe_bin = get_ffprobe_binary()
     if not ffprobe_bin:
-        return 0.0
+        try:
+            import soundfile as sf
+            info = sf.info(str(path))
+            return round(float(info.duration), 2)
+        except Exception:
+            return 0.0
 
     cmd = [
         ffprobe_bin,
@@ -103,13 +143,14 @@ def extract_audio(
         target_path = Path(output_audio_path).resolve()
         target_path.parent.mkdir(parents=True, exist_ok=True)
 
+    ffmpeg_bin = get_ffmpeg_binary()
     # FFmpeg arguments:
     # -vn: STRICTLY DISABLE VIDEO STREAM (no frames extracted)
     # -acodec pcm_s16le: 16-bit PCM WAV
     # -ar 16000: 16 kHz sampling rate
     # -ac 1: Mono audio channel
     cmd = [
-        "ffmpeg",
+        ffmpeg_bin,
         "-y",
         "-i",
         str(path),
@@ -151,9 +192,8 @@ def separate_voice_and_bgm(
     Acoustically separates speech voice from background music / noise.
     1. Extracts raw 16kHz mono audio.
     2. Applies acoustic bandpass (80Hz - 3800Hz) to isolate human vocal tract frequencies
-       while stripping sub-bass music and high-frequency cymbals/synths.
-    3. Applies spectral gating (noisereduce) to suppress residual instrumental beats and noise.
-    4. Computes background music residual (BGM = raw - voice).
+       while stripping sub-bass music and high-frequency cymbals/synths with dynaudnorm speech leveling.
+    3. Computes background music residual (BGM = raw - voice).
 
     Returns:
         Dict with 'voice_audio', 'bgm_audio', 'raw_audio', and 'duration'.
@@ -179,11 +219,11 @@ def separate_voice_and_bgm(
     else:
         bgm_path = Path(output_bgm_path).resolve()
 
+    ffmpeg_bin = get_ffmpeg_binary()
     # 2. Apply FFmpeg vocal bandpass + adaptive FFT noise/music suppression + dynamic normalizer
     # Filter: highpass=80, lowpass=3800, afftdn (FFT denoiser), dynaudnorm (speech leveler)
-    filtered_temp = (AUDIO_DIR / f"{source_path.stem}_vocal_filtered.wav").resolve()
     cmd = [
-        "ffmpeg",
+        ffmpeg_bin,
         "-y",
         "-i", str(raw_audio_path),
         "-vn",
@@ -191,56 +231,31 @@ def separate_voice_and_bgm(
         "-acodec", "pcm_s16le",
         "-ar", str(AUDIO_SAMPLE_RATE),
         "-ac", "1",
-        str(filtered_temp),
+        str(voice_path),
     ]
 
     try:
         subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     except Exception:
         # If filter fails, fallback to raw audio
-        shutil.copyfile(raw_audio_path, filtered_temp)
+        shutil.copyfile(raw_audio_path, voice_path)
 
-    # 3. Read and apply spectral noise/music suppression via noisereduce & soundfile
+    # 3. Calculate BGM residual (Raw - Voice) with lightweight vector subtraction (<10MB RAM, instant)
     try:
         import soundfile as sf
-        import noisereduce as nr
 
         raw_data, sr = sf.read(str(raw_audio_path))
-        filtered_data, _ = sf.read(str(filtered_temp))
+        voice_data, _ = sf.read(str(voice_path))
 
-        # Perform spectral gating to attenuate background music
-        clean_voice = nr.reduce_noise(
-            y=filtered_data,
-            sr=sr,
-            stationary=False,
-            prop_decrease=0.85,
-        )
-
-        # Normalize clean voice volume
-        max_val = np.max(np.abs(clean_voice))
-        if max_val > 1e-4:
-            clean_voice = (clean_voice / max_val) * 0.9
-
-        sf.write(str(voice_path), clean_voice, sr)
-
-        # Calculate BGM residual (Raw - Voice)
-        min_len = min(len(raw_data), len(clean_voice))
-        bgm_data = raw_data[:min_len] - clean_voice[:min_len]
-        bgm_max = np.max(np.abs(bgm_data))
+        min_len = min(len(raw_data), len(voice_data))
+        bgm_data = raw_data[:min_len] - voice_data[:min_len]
+        bgm_max = float(np.max(np.abs(bgm_data))) if len(bgm_data) > 0 else 0.0
         if bgm_max > 1e-4:
             bgm_data = (bgm_data / bgm_max) * 0.75
         sf.write(str(bgm_path), bgm_data, sr)
 
     except Exception:
-        # Fallback to filtered temp if noisereduce encountered any issue
-        shutil.copyfile(filtered_temp, voice_path)
         shutil.copyfile(raw_audio_path, bgm_path)
-    finally:
-        if filtered_temp.exists():
-            try:
-                filtered_temp.unlink()
-            except Exception:
-                pass
 
     dur = get_media_duration(voice_path)
 
